@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/llarrauriborroto/Documents/CodingProjects/PMIN/main.cpp
+iostream
+-
+vector
+-
+list
+-
+memory
+-
+chrono
+-
+optional
+-
+

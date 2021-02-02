@@ -12,6 +12,7 @@
 #include<unordered_map>
 #include<climits>
 #include<memory>
+#include<optional>
 
 namespace machines
 {
@@ -34,10 +35,10 @@ protected:
     const unsigned out_alphabet_size;
 
 public:
-    unsigned getSize() const{return size;}
-    unsigned numberOfInputs() const{return in_alphabet_size;}
-    unsigned numberOfOutputs() const{return out_alphabet_size;}
-
+    inline unsigned getSize() const{return size;}
+    inline unsigned numberOfInputs() const{return in_alphabet_size;}
+    inline unsigned numberOfOutputs() const{return out_alphabet_size;}
+    FSM(unsigned in_size, unsigned out_size):in_alphabet_size(in_size), out_alphabet_size(out_size),size(0){};
 };
 
 class OFSM;
@@ -56,22 +57,9 @@ class DTrans{
 class NTrans{
         public:
         unsigned out;
-        std::unique_ptr<std::vector<unsigned>> successors;
-
-        NTrans(NTrans&& trans){
-            out=trans.out;
-            successors=std::move(trans.successors);
-        }
-
-        NTrans& operator=(NTrans&& other)
-        {
-            out=other.out;
-            successors=std::move(other.successors);
-            return *this;
-        }
+        std::vector<unsigned> successors;
 
     };
-
 
 
 
@@ -92,14 +80,25 @@ private:
     std::vector<DTrans> impl;
 
 public:
+//TODO: Check for overflows
+    inline void addStates(unsigned amount=1){
+        size+=amount;
+        impl.resize(size*in_alphabet_size);
+    }
 
-   inline unsigned getOutput(unsigned state, unsigned in)const{
+   inline unsigned& out(unsigned state, unsigned in){
        return impl[SItoIDX(state,in)].out;
    }
 
-   inline unsigned getSuccessor(unsigned state, unsigned in){
+   inline unsigned& succ(unsigned state, unsigned in){
        return impl[SItoIDX(state,in)].next;
    }
+
+   DFSM(unsigned in_size, unsigned out_size): FSM(in_size,out_size){}
+
+   void print();
+
+
 
 
 
@@ -110,9 +109,8 @@ class OFSM:  public virtual FSM{
 private:
 
 
-    typedef std::vector<NTrans>::size_type IDX;
-    const unsigned DONT_CARE=out_alphabet_size;
-    std::vector<NTrans> impl;
+    typedef std::vector<std::optional<NTrans>>::size_type IDX;
+    std::vector<std::optional<NTrans>> impl;
 
 
     inline IDX SItoIDX(const unsigned state, const unsigned in) const{
@@ -126,12 +124,35 @@ private:
 
 public:
 
-    inline unsigned getOutput(const unsigned state, const unsigned in) const;
-    inline const std::vector<unsigned>*
-        peakSuccessors(const unsigned state, const unsigned in) const;
+    inline bool hasTransition(const unsigned state, const unsigned in){
+        return impl[SItoIDX(state,in)].has_value();
+    }
 
-    void addState();
-    void setTransition(unsigned int state, unsigned int in, NTrans& trans);
+    inline unsigned& out(const unsigned state, const unsigned in){
+        if(!impl[SItoIDX(state,in)]){
+            impl[SItoIDX(state,in)].emplace();
+        }
+        return impl[SItoIDX(state,in)]->out;
+
+    }
+
+    inline std::vector<unsigned>&
+        succs(const unsigned state, const unsigned in){
+        if(!impl[SItoIDX(state,in)]){
+            impl[SItoIDX(state,in)].emplace();
+        }
+        return impl[SItoIDX(state,in)]->successors;
+
+    }
+
+    inline void addStates(unsigned amount=1){
+        size+=amount;
+        impl.resize(size*in_alphabet_size);
+    }
+
+    OFSM(unsigned in_size, unsigned out_size): FSM(in_size,out_size){}
+
+    void print();
 };
 
 

@@ -1,3 +1,0 @@
-/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-debug/CMakeFiles/PMIN.dir

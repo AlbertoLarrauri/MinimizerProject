@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.17)
 project(PMIN)
 
 set(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_FLAGS "-O0")
-SET(CMAKE_C_FLAGS "-O0")
 LINK_DIRECTORIES(/usr/local/lib)
 
 

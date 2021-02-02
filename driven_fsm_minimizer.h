@@ -11,7 +11,7 @@
 using namespace machines;
 namespace minimizers{
 
-    OFSM &buildOFSM(const DFSM& driver,const DFSM& driven);
+    OFSM &buildOFSM(DFSM& driver, DFSM& driven);
 
     class OFSMMinimizer{
         private:

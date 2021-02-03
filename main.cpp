@@ -12,6 +12,8 @@
 
 
 int main() {
+
+
     DFSM a(2,2);
     a.addStates(2);
     a.succ(0,0)=1;
@@ -23,9 +25,11 @@ int main() {
     a.out(1,0)=0;
     a.out(1,1)=1;
     a.print();
-    OFSM o=minimizers::buildOFSM(a,a);
+    minimizers::DrivenFSMMinimizer minimizer(a,a);
+    minimizer.buildOFSM();
+    OFSM o=minimizer.getOFSM();
     o.print();
-    delete &o;
+
 
 //    auto time0=std::chrono::high_resolution_clock::now();
 //    std::list<int> list1={};

@@ -26,7 +26,7 @@ namespace machines{
                 if(!hasTransition(state,i)) {
                     std::cout<<"*\n";
                 } else{
-                    std::vector<unsigned>& targets=succs(state,i);
+                    const std::vector<unsigned>& targets=succs(state,i);
                     std::cout<<out(state, i) << " / [ "<< targets[0];
 
                      for (unsigned j=1; j<targets.size(); j++) {

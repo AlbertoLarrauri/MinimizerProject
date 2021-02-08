@@ -64,10 +64,10 @@ RM = /snap/clion/139/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/llarrauriborroto/Documents/CodingProjects/PMIN
+CMAKE_SOURCE_DIR = /home/lazhares/Documents/CodingProjects/MinimizerProject
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release
+CMAKE_BINARY_DIR = /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -94,14 +94,14 @@ clean: CMakeFiles/PMIN.dir/clean
 CMakeFiles/PMIN.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/PMIN.dir/build.make CMakeFiles/PMIN.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/PMIN.dir/build.make CMakeFiles/PMIN.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles --progress-num=1,2,3,4 "Built target PMIN"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles --progress-num=1,2,3,4 "Built target PMIN"
 .PHONY : CMakeFiles/PMIN.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/PMIN.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/PMIN.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles 0
 .PHONY : CMakeFiles/PMIN.dir/rule
 
 # Convenience name for target.

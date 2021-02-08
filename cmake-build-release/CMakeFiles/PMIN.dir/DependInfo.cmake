@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/llarrauriborroto/Documents/CodingProjects/PMIN/driven_fsm_minimizer.cpp" "/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o"
-  "/home/llarrauriborroto/Documents/CodingProjects/PMIN/fsms.cpp" "/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles/PMIN.dir/fsms.cpp.o"
-  "/home/llarrauriborroto/Documents/CodingProjects/PMIN/main.cpp" "/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles/PMIN.dir/main.cpp.o"
+  "/home/lazhares/Documents/CodingProjects/MinimizerProject/driven_fsm_minimizer.cpp" "/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o"
+  "/home/lazhares/Documents/CodingProjects/MinimizerProject/fsms.cpp" "/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles/PMIN.dir/fsms.cpp.o"
+  "/home/lazhares/Documents/CodingProjects/MinimizerProject/main.cpp" "/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles/PMIN.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

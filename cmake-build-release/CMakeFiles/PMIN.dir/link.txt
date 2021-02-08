@@ -1,1 +1,1 @@
-/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/PMIN.dir/main.cpp.o CMakeFiles/PMIN.dir/fsms.cpp.o CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o  -o PMIN   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib -lcryptominisat5 
+/usr/bin/c++  -O3   CMakeFiles/PMIN.dir/main.cpp.o CMakeFiles/PMIN.dir/fsms.cpp.o CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o  -o PMIN  -Wl,-rpath,/usr/local/lib /usr/local/lib/libcryptominisat5.so.5.8 /usr/lib/x86_64-linux-gnu/libmpichcxx.so /usr/lib/x86_64-linux-gnu/libmpich.so /usr/lib/x86_64-linux-gnu/libm4ri.so /usr/lib/x86_64-linux-gnu/libsqlite3.so -pthread 

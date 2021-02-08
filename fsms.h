@@ -5,15 +5,12 @@
 #ifndef PMIN_FSMS_H
 #define PMIN_FSMS_H
 
-
-
-#include<vector>
-#include<unordered_set>
-#include<unordered_map>
-#include<climits>
-#include<memory>
-#include<optional>
+#include<iostream>
+#include <vector>
+#include <optional>
+#include <unordered_map>
 #include <cassert>
+
 
 namespace machines
 {
@@ -68,6 +65,7 @@ class NTrans{
 
 
 DFSM& cascadeDFSM(const DFSM& A, const DFSM& B);
+void makeRandomDFSM(unsigned size, DFSM& A);
 
 class DFSM: public virtual FSM{
 
@@ -112,23 +110,26 @@ private:
 
     typedef std::vector<std::optional<NTrans>>::size_type ID;
     typedef std::vector<std::optional<std::vector<unsigned>>>::size_type ID2;
+    typedef std::vector<std::unordered_map<size_t, std::vector<unsigned>>> SOURCE_IMPL;
+
     std::vector<std::optional<NTrans>> impl;
-    std::vector<std::optional<std::vector<unsigned>>> source_data;
+    SOURCE_IMPL source_data;
+//    std::vector<std::optional<std::vector<unsigned>>> source_data;
 
     inline ID SItoID(const unsigned state, const unsigned in) const{
         return ID(in_alphabet_size) * ID(state) + ID(in);
     }
 
-
-    inline ID2 SIOtoID(const unsigned state, const unsigned in, const unsigned out) const{
-        return ID2(out_alphabet_size)*
-            (ID2(in_alphabet_size)*ID2(state) + ID2(in))
-                + ID2(out);
-    }
-
-//    inline size_t IOtoSIZE_T(const unsigned state, const unsigned in) const{
-//        return size_t(in_alphabet_size)*size_t(state)+ size_t(in);
+//
+//    inline ID2 SIOtoID(const unsigned state, const unsigned in, const unsigned out) const{
+//        return ID2(out_alphabet_size)*
+//            (ID2(in_alphabet_size)*ID2(state) + ID2(in))
+//                + ID2(out);
 //    }
+
+    inline size_t IOtoID(const unsigned i, const unsigned o) const{
+        return size_t(in_alphabet_size)*size_t(o)+ size_t(i);
+    }
 
 
 public:
@@ -153,10 +154,7 @@ public:
     void addSucc(unsigned state, unsigned in, unsigned succ){
         assert(impl[SItoID(state, in)]);
         impl[SItoID(state, in)]->successors.push_back(succ);
-
-        auto& sources=source_data[SIOtoID(succ,in,out(state,in))];
-        if(!sources) sources.emplace();
-        sources->push_back(state);
+        source_data[succ][IOtoID(in,out(state,in))].emplace_back(state);
     }
 
     inline const std::vector<unsigned>&
@@ -175,15 +173,19 @@ public:
 
 
     inline bool hasSources(unsigned state, unsigned in, unsigned out){
-        return source_data[SIOtoID(state, in, out)].has_value();
+        return source_data[state].count(IOtoID(in, out));
     }
 
 
 
 
     inline const std::vector<unsigned>& sources(unsigned state, unsigned in, unsigned out){
-        assert(source_data[SIOtoID(state, in, out)]);
-        return *source_data[SIOtoID(state, in, out)];
+        assert(hasSources(state, in, out));
+        return source_data[state][IOtoID(in, out)];
+    }
+
+    inline const std::unordered_map<size_t, std::vector<unsigned>>& sourceData(unsigned state){
+        return source_data[state];
     }
 
 

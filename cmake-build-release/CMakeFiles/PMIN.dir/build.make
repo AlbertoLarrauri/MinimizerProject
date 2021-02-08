@@ -63,10 +63,10 @@ RM = /snap/clion/139/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/llarrauriborroto/Documents/CodingProjects/PMIN
+CMAKE_SOURCE_DIR = /home/lazhares/Documents/CodingProjects/MinimizerProject
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release
+CMAKE_BINARY_DIR = /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release
 
 # Include any dependencies generated for this target.
 include CMakeFiles/PMIN.dir/depend.make
@@ -79,42 +79,42 @@ include CMakeFiles/PMIN.dir/flags.make
 
 CMakeFiles/PMIN.dir/main.cpp.o: CMakeFiles/PMIN.dir/flags.make
 CMakeFiles/PMIN.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/PMIN.dir/main.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PMIN.dir/main.cpp.o -c /home/llarrauriborroto/Documents/CodingProjects/PMIN/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/PMIN.dir/main.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PMIN.dir/main.cpp.o -c /home/lazhares/Documents/CodingProjects/MinimizerProject/main.cpp
 
 CMakeFiles/PMIN.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/PMIN.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/llarrauriborroto/Documents/CodingProjects/PMIN/main.cpp > CMakeFiles/PMIN.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lazhares/Documents/CodingProjects/MinimizerProject/main.cpp > CMakeFiles/PMIN.dir/main.cpp.i
 
 CMakeFiles/PMIN.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/PMIN.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/llarrauriborroto/Documents/CodingProjects/PMIN/main.cpp -o CMakeFiles/PMIN.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lazhares/Documents/CodingProjects/MinimizerProject/main.cpp -o CMakeFiles/PMIN.dir/main.cpp.s
 
 CMakeFiles/PMIN.dir/fsms.cpp.o: CMakeFiles/PMIN.dir/flags.make
 CMakeFiles/PMIN.dir/fsms.cpp.o: ../fsms.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/PMIN.dir/fsms.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PMIN.dir/fsms.cpp.o -c /home/llarrauriborroto/Documents/CodingProjects/PMIN/fsms.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/PMIN.dir/fsms.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PMIN.dir/fsms.cpp.o -c /home/lazhares/Documents/CodingProjects/MinimizerProject/fsms.cpp
 
 CMakeFiles/PMIN.dir/fsms.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/PMIN.dir/fsms.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/llarrauriborroto/Documents/CodingProjects/PMIN/fsms.cpp > CMakeFiles/PMIN.dir/fsms.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lazhares/Documents/CodingProjects/MinimizerProject/fsms.cpp > CMakeFiles/PMIN.dir/fsms.cpp.i
 
 CMakeFiles/PMIN.dir/fsms.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/PMIN.dir/fsms.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/llarrauriborroto/Documents/CodingProjects/PMIN/fsms.cpp -o CMakeFiles/PMIN.dir/fsms.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lazhares/Documents/CodingProjects/MinimizerProject/fsms.cpp -o CMakeFiles/PMIN.dir/fsms.cpp.s
 
 CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o: CMakeFiles/PMIN.dir/flags.make
 CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o: ../driven_fsm_minimizer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o -c /home/llarrauriborroto/Documents/CodingProjects/PMIN/driven_fsm_minimizer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o -c /home/lazhares/Documents/CodingProjects/MinimizerProject/driven_fsm_minimizer.cpp
 
 CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/llarrauriborroto/Documents/CodingProjects/PMIN/driven_fsm_minimizer.cpp > CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lazhares/Documents/CodingProjects/MinimizerProject/driven_fsm_minimizer.cpp > CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.i
 
 CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/llarrauriborroto/Documents/CodingProjects/PMIN/driven_fsm_minimizer.cpp -o CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lazhares/Documents/CodingProjects/MinimizerProject/driven_fsm_minimizer.cpp -o CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.s
 
 # Object files for target PMIN
 PMIN_OBJECTS = \
@@ -129,8 +129,13 @@ PMIN: CMakeFiles/PMIN.dir/main.cpp.o
 PMIN: CMakeFiles/PMIN.dir/fsms.cpp.o
 PMIN: CMakeFiles/PMIN.dir/driven_fsm_minimizer.cpp.o
 PMIN: CMakeFiles/PMIN.dir/build.make
+PMIN: /usr/local/lib/libcryptominisat5.so.5.8
+PMIN: /usr/lib/x86_64-linux-gnu/libmpichcxx.so
+PMIN: /usr/lib/x86_64-linux-gnu/libmpich.so
+PMIN: /usr/lib/x86_64-linux-gnu/libm4ri.so
+PMIN: /usr/lib/x86_64-linux-gnu/libsqlite3.so
 PMIN: CMakeFiles/PMIN.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable PMIN"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable PMIN"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/PMIN.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -143,6 +148,6 @@ CMakeFiles/PMIN.dir/clean:
 .PHONY : CMakeFiles/PMIN.dir/clean
 
 CMakeFiles/PMIN.dir/depend:
-	cd /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/llarrauriborroto/Documents/CodingProjects/PMIN /home/llarrauriborroto/Documents/CodingProjects/PMIN /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release /home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles/PMIN.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/lazhares/Documents/CodingProjects/MinimizerProject /home/lazhares/Documents/CodingProjects/MinimizerProject /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release /home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles/PMIN.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/PMIN.dir/depend
 

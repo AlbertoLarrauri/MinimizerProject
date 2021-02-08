@@ -1,4 +1,4 @@
-# Install script for directory: /home/llarrauriborroto/Documents/CodingProjects/PMIN
+# Install script for directory: /home/lazhares/Documents/CodingProjects/MinimizerProject
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,3 +1,3 @@
-/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles/rebuild_cache.dir
-/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles/edit_cache.dir
-/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/CMakeFiles/PMIN.dir
+/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles/rebuild_cache.dir
+/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles/edit_cache.dir
+/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/CMakeFiles/PMIN.dir

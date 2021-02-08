@@ -5,41 +5,41 @@
 		<Option title="PMIN"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\cryptominisat5\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release"/>
+				<Option working_dir="/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release"/>
+				<Option working_dir="/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release"/>
+				<Option working_dir="/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="PMIN">
-				<Option output="/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/PMIN" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release"/>
+				<Option output="/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/PMIN" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -53,15 +53,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 PMIN"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 PMIN"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="PMIN/fast">
-				<Option output="/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/PMIN" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release"/>
+				<Option output="/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/PMIN" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -75,30 +75,39 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 PMIN/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/llarrauriborroto/Documents/CodingProjects/PMIN/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 PMIN/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/lazhares/Documents/CodingProjects/MinimizerProject/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/llarrauriborroto/Documents/CodingProjects/PMIN/driven_fsm_minimizer.cpp">
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/driven_fsm_minimizer.cpp">
 			<Option target="PMIN"/>
 		</Unit>
-		<Unit filename="/home/llarrauriborroto/Documents/CodingProjects/PMIN/driven_fsm_minimizer.h">
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/driven_fsm_minimizer.h">
 			<Option target="PMIN"/>
 		</Unit>
-		<Unit filename="/home/llarrauriborroto/Documents/CodingProjects/PMIN/fsms.cpp">
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/fsms.cpp">
 			<Option target="PMIN"/>
 		</Unit>
-		<Unit filename="/home/llarrauriborroto/Documents/CodingProjects/PMIN/fsms.h">
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/fsms.h">
 			<Option target="PMIN"/>
 		</Unit>
-		<Unit filename="/home/llarrauriborroto/Documents/CodingProjects/PMIN/main.cpp">
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/main.cpp">
 			<Option target="PMIN"/>
 		</Unit>
-		<Unit filename="/home/llarrauriborroto/Documents/CodingProjects/PMIN/CMakeLists.txt">
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/../../../../../usr/local/lib/cmake/cryptominisat5/cryptominisat5Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\cryptominisat5\"/>
+		</Unit>
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/../../../../../usr/local/lib/cmake/cryptominisat5/cryptominisat5Targets-relwithdebinfo.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\cryptominisat5\"/>
+		</Unit>
+		<Unit filename="/home/lazhares/Documents/CodingProjects/MinimizerProject/../../../../../usr/local/lib/cmake/cryptominisat5/cryptominisat5Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\cryptominisat5\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

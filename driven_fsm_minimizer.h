@@ -6,6 +6,7 @@
 #define PMIN_DRIVEN_FSM_MINIMIZER_H
 
 #include <iostream>
+#include <memory>
 #include "cryptominisat5/cryptominisat.h"
 
 
@@ -20,11 +21,11 @@ namespace minimizers{
 
     class DrivenFSMMinimizer{
         private:
-            DFSM& driver;
-            DFSM& driven;
+            const DFSM& driver;
+            const DFSM& driven;
 
-            OFSM obs_fsm;
-            DFSM result;
+            std::unique_ptr<OFSM> obs_fsm_ptr;
+            std::unique_ptr<DFSM> result_ptr;
 
             bool ofsm_init;
 
@@ -51,7 +52,7 @@ namespace minimizers{
             unsigned current_size;
 
             inline size_t stateClassToID(unsigned state, unsigned Class){
-                return Class*obs_fsm.getSize()+state;
+                return Class*obs_fsm_ptr->getSize()+state;
             }
 
             inline size_t elegant_pairing(unsigned x, unsigned y){
@@ -59,7 +60,7 @@ namespace minimizers{
             }
 
             inline size_t CCiToID(unsigned Class1, unsigned Class2, unsigned input){
-                return (obs_fsm.numberOfInputs()*elegant_pairing(Class1,Class2))+input;
+                return (obs_fsm_ptr->numberOfInputs()*elegant_pairing(Class1,Class2))+input;
             }
 
 
@@ -77,19 +78,17 @@ namespace minimizers{
 
 
         public:
-            DrivenFSMMinimizer(DFSM& _driver, DFSM& _driven):
+            DrivenFSMMinimizer(const DFSM& _driver, const DFSM& _driven):
                 driver(_driver),
                 driven(_driven),
-                obs_fsm(driven.numberOfInputs(),
-                            driven.numberOfOutputs()),
-                result(driven.numberOfInputs(),
-                       driven.numberOfOutputs())
-                            {
+                obs_fsm_ptr(),
+                result_ptr(){
+
                 assert(driver.numberOfOutputs()==driven.numberOfInputs());
             }
 
             inline OFSM& getOFSM(){
-                return obs_fsm;
+                return *obs_fsm_ptr;
             }
 
             void buildOFSM();

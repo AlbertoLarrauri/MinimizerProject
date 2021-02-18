@@ -16,7 +16,7 @@ namespace machines{
         std::cout<<"---------------------------------\n";
         for(unsigned state = 0; state < size ; ++state) {
             for (unsigned i = 0; i < in_alphabet_size ; ++i) {
-                std::cout<<state<<" / "<<i<<" --> "<<out(state,i)<<" / "<<succ(state,i)<<"\n";
+                std::cout<<state<<" / "<<i<<" --> "<<getOut(state,i)<<" / "<<getSucc(state,i)<<"\n";
             }
         }
     }
@@ -73,8 +73,8 @@ namespace machines{
         std::uniform_int_distribution<unsigned> succ_generator(0,size-1);
         for (unsigned state = 0; state < size; ++state) {
             for (unsigned i = 0; i < A.numberOfInputs(); ++i) {
-                A.out(state,i)=output_generator(defEngine);
-                A.succ(state,i)=succ_generator(defEngine);
+                A.setOut(state,i, output_generator(defEngine));
+                A.setSucc(state,i,succ_generator(defEngine));
             }
         }
 

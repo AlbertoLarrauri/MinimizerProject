@@ -8,108 +8,131 @@
 #include <iostream>
 #include <memory>
 #include "cryptominisat5/cryptominisat.h"
-
-
+#include "machine_builders.h"
+#include "compat_matrix.h"
 
 
 using namespace machines;
 
 
-
-namespace minimizers{
-
-
-    class DrivenFSMMinimizer{
-        private:
-            const DFSM& driver;
-            const DFSM& driven;
-
-            std::unique_ptr<OFSM> obs_fsm_ptr;
-            std::unique_ptr<DFSM> result_ptr;
-
-            bool ofsm_init;
-
-            bool solved=false;
-            bool incremented=false;
-
-            bool matrix_up_to_date;
-            std::vector<bool> compat_matrix;
-
-            bool matrix_processed;
-            std::vector<unsigned> big_clique;
-            std::vector<size_t> incompatible_pairs;
+namespace minimizers {
 
 
-            CMSat::SATSolver solver;
+    class DrivenFSMMinimizer {
+    private:
 
-            bool initial_covered=false;
+        //DATA STRUCTURES
 
-            size_t max_var=0;
+        const DFSM &driver;
+        const DFSM &driven;
 
-            std::vector<size_t> state_class_vars;
-            std::vector<size_t> class_class_vars;
-            std::vector<size_t> size_vars;
-            unsigned current_size;
+        std::unique_ptr<OFSM> ofsm;
 
-            inline size_t stateClassToID(unsigned state, unsigned Class){
-                return Class*obs_fsm_ptr->getSize()+state;
+        std::unique_ptr<DFSM> result;
+
+        std::unique_ptr<CompatMatrix> compat_matrix;
+        std::vector<int> big_clique;
+
+        CMSat::SATSolver solver;
+
+        //FLAGS
+
+        bool generate_clique=true;
+
+
+        bool solved = false;
+        bool incremented = false;
+        bool matrix_up_to_date;
+
+
+
+
+        bool initial_covered = false;
+
+        size_t max_var = 0;
+
+        std::vector<size_t> state_class_vars;
+        std::vector<size_t> class_class_vars;
+        std::vector<size_t> size_vars;
+        int
+                current_size;
+
+        inline size_t stateClassToID(int state, int Class) {
+            return Class * ofsm->getSize() + state;
+        }
+
+        inline size_t elegant_pairing(int
+                                      x, int
+                                      y) {
+            return (x >= y ? (x * x) + x + y : (y * y) + x);
+        }
+
+        inline size_t CCiToID(int
+                              Class1, int
+                              Class2, int
+                              input) {
+            return (ofsm->numberOfInputs() * elegant_pairing(Class1, Class2)) + input;
+        }
+
+
+        inline size_t toCMatrixID(int
+                                  state1, int
+                                  state2) {
+            if (state1 >= state2) {
+                return (state1 * (state1 + 1)) / 2 + state2;
             }
+            return (state2 * (state2 + 1)) / 2 + state1;
+        }
 
-            inline size_t elegant_pairing(unsigned x, unsigned y){
-                return (x >= y ? (x * x) + x + y : (y * y) + x);
-            }
+        void buildFrameCNF();
 
-            inline size_t CCiToID(unsigned Class1, unsigned Class2, unsigned input){
-                return (obs_fsm_ptr->numberOfInputs()*elegant_pairing(Class1,Class2))+input;
-            }
+        void buildInitialCoverCNF();
 
+        void buildIncrementalClauses();
 
-            inline size_t toCMatrixID(unsigned state1, unsigned state2){
-                if (state1>=state2){
-                    return (state1*(state1+1))/2 + state2;
-                }
-                return (state2*(state2+1))/2 + state1;
-            }
-
-            void buildFrameCNF();
-            void buildInitialCoverCNF();
-            void buildIncrementalClauses();
-            void generateIncrementalVars();
+        void generateIncrementalVars();
 
 
-        public:
-            DrivenFSMMinimizer(const DFSM& _driver, const DFSM& _driven):
+
+
+    public:
+
+         void check(){
+             compat_matrix->check();
+         }
+
+
+
+        DrivenFSMMinimizer(const DFSM &_driver, const DFSM &_driven) :
                 driver(_driver),
                 driven(_driven),
-                obs_fsm_ptr(),
-                result_ptr(){
+                result() {
 
-                assert(driver.numberOfOutputs()==driven.numberOfInputs());
-            }
+            assert(driver.numberOfOutputs() == driven.numberOfInputs());
+        }
 
-            inline OFSM& getOFSM(){
-                return *obs_fsm_ptr;
-            }
+        inline const OFSM &getOFSM() {
+            return *ofsm;
+        }
 
-            void buildOFSM();
+        void buildOFSM();
 
-            void buildCMatrix();
+        void buildCMatrix();
 
-            void processCMatrix();
 
-            void printIncompatibles();
+        void printIncompatibles();
 
-            void printBigClique();
+        void printBigClique();
 
-            void buildInitialCNF();
+        void buildInitialCNF();
 
-            void tryMinimize();
+        void tryMinimize();
 
-            void printResult();
+        void printResult();
 
-            void incrementCNF();
+        void incrementCNF();
 
-            void solve();
+        void solve();
 
     };
 

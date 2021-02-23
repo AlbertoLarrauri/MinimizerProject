@@ -27,48 +27,49 @@ namespace machines
 
 
 
-class FSM{
-protected:
-    unsigned size;
-    unsigned in_alphabet_size;
-    unsigned out_alphabet_size;
+    class FSM{
+    protected:
+        int size;
+        int in_alphabet_size;
+        int out_alphabet_size;
 
-public:
-    void reset(unsigned in_size=0, unsigned out_size=0){
-        in_alphabet_size=in_size;
-        out_alphabet_size=out_size;
-        size=0;
-    }
-    inline unsigned getSize() const{return size;}
-    inline unsigned numberOfInputs() const{return in_alphabet_size;}
-    inline unsigned numberOfOutputs() const{return out_alphabet_size;}
-    FSM(unsigned in_size, unsigned out_size):in_alphabet_size(in_size), out_alphabet_size(out_size),size(0){};
+        //CONSTRUCTORS
 
-    FSM(FSM&& other){
-        in_alphabet_size=other.in_alphabet_size;
-        out_alphabet_size=other.out_alphabet_size;
-        size=other.size;
-        other.reset();
-    }
-};
-
-class OFSM;
-class NTrans;
-class DTrans;
-class DFSM;
+        FSM(int in_size, int out_size):in_alphabet_size(in_size), out_alphabet_size(out_size),size(0){};
 
 
+        virtual void reset(int in_size=0, int out_size=0){
+            in_alphabet_size=in_size;
+            out_alphabet_size=out_size;
+            size=0;
+        }
 
-class DTrans{
     public:
-        unsigned out;
-        unsigned next;
-};
+        inline int getSize() const{return size;}
+        inline int numberOfInputs() const{return in_alphabet_size;}
+        inline int numberOfOutputs() const{return out_alphabet_size;}
 
-class NTrans{
-        public:
-        unsigned out;
-        std::vector<unsigned> successors;
+
+
+    };
+
+    class OFSM;
+    class NTrans;
+    class DTrans;
+    class DFSM;
+
+
+
+    class DTrans{
+    public:
+        int out;
+        int next;
+    };
+
+    class NTrans{
+    public:
+        int out;
+        std::vector<int> successors;
 
     };
 
@@ -77,158 +78,197 @@ class NTrans{
 
 
 
-DFSM& cascadeDFSM(const DFSM& A, const DFSM& B);
-void makeRandomDFSM(unsigned size, DFSM& A);
+    DFSM& cascadeDFSM(const DFSM& A, const DFSM& B);
+    void makeRandomDFSM(int size, DFSM& A);
 
 
-class DFSM: public virtual FSM{
-private:
-    inline size_t SItoID(const unsigned state, const unsigned in) const{
-        return size_t(in_alphabet_size) * size_t(state) + size_t(in);
-    }
+    class DFSM: public virtual FSM{
+    private:
 
-    typedef std::vector<DTrans> IMPL;
+        // Transition data:
 
-    std::unique_ptr<IMPL> impl;
+        typedef std::vector<DTrans> IMPL;
 
-public:
-//TODO: Check for overflows
-    inline void addStates(unsigned amount=1){
-        size+=amount;
-        impl->resize(size*in_alphabet_size);
-    }
+        IMPL impl;
 
-   inline const unsigned& getOut(unsigned state, unsigned in) const{
-       return impl->at(SItoID(state, in)).out;
-   }
+        // Helper function to get transition index;
 
-   inline const unsigned& getSucc(unsigned state, unsigned in)const{
-       return impl->at(SItoID(state, in)).next;
-   }
-
-    inline void setOut(unsigned state, unsigned in, unsigned  out){
-        impl->at(SItoID(state, in)).out=out;
-    }
-
-    inline void setSucc(unsigned state, unsigned in, unsigned next){
-        impl->at(SItoID(state, in)).next=next;
-    }
-
-    void reset(unsigned in_size, unsigned out_size){
-        DFSM::reset(in_size,out_size);
-        impl=std::make_unique<IMPL>();
-    }
-
-
-    DFSM(unsigned in_size, unsigned out_size): FSM(in_size,out_size){}
-
-    DFSM(DFSM&& other): FSM(std::move(other)){
-        impl=std::move(other.impl);
-    }
-
-   void print();
+        inline size_t SItoID(const int state, const int in) const{
+            return size_t(in_alphabet_size) * size_t(state) + size_t(in);
+        }
 
 
 
+    public:
 
+        DFSM(int in_size, int out_size): FSM(in_size,out_size){
+        }
 
-};
+        DFSM(const DFSM& other)=default;
+        DFSM& operator=(const DFSM& other)=default;
 
-class OFSM:  public virtual FSM{
+        DFSM(DFSM&& other) noexcept:
+        //Fist copies FSM parameters: size, input alphabet size, and output alphabet size
+                FSM(other),
+                impl(std::move(other.impl))
+        {
+            other.reset();
+        }
 
-private:
+        DFSM& operator=(DFSM&& other){
+            FSM::operator=(other);
+            impl=std::move(other.impl);
+            other.reset();
+            return *this;
+        }
 
-    typedef std::vector<std::unordered_map<size_t, std::vector<unsigned>>> SOURCE_IMPL;
-    typedef std::vector<std::optional<NTrans>> IMPL;
-    std::unique_ptr<IMPL> impl;
-    std::unique_ptr<SOURCE_IMPL> source_data;
-
-
-    inline size_t SItoID(const unsigned state, const unsigned in) const{
-        return size_t(in_alphabet_size) * size_t(state) + size_t(in);
-    }
-
-
-
-    inline size_t IOtoID(const unsigned i, const unsigned o) const{
-        return size_t(in_alphabet_size)*size_t(o)+ size_t(i);
-    }
-
-
-public:
-
-    OFSM(unsigned in_size, unsigned out_size): FSM(in_size,out_size){}
-
-    OFSM(OFSM&& other):FSM(std::move(other)){
-        impl=std::move(other.impl);
-        source_data=std::move(other.source_data);
-    }
-
-    void reset(unsigned in_size, unsigned out_size){
-        FSM::reset(in_size,out_size);
-        impl=std::make_unique<IMPL>();
-        source_data=std::make_unique<SOURCE_IMPL>();
-    }
+        void reset(int in_size=0, int out_size=0) override{
+            FSM::reset(in_size,out_size);
+            impl.clear();
+        }
 
 
 
-    inline bool hasTransition(const unsigned state, const unsigned in){
-        return (*impl)[SItoID(state, in)].has_value();
-    }
+        inline void addStates(int amount=1){
+            size+=amount;
+            impl.resize(size*in_alphabet_size);
+        }
+
+
+        inline const int& getOut(int state, int in) const{
+            return impl.at(SItoID(state, in)).out;
+        }
+
+        inline const int& getSucc(int state, int in)const{
+            return impl.at(SItoID(state, in)).next;
+        }
+
+        inline void setOut(int state, int in, int  out){
+            impl.at(SItoID(state, in)).out=out;
+        }
+
+        inline void setSucc(int state, int in, int next){
+            impl.at(SItoID(state, in)).next=next;
+        }
+
+
+        void print();
+
+    };
+
+    class OFSM:  public virtual FSM{
+
+    private:
+
+        // Transition data. We keep track of sources and targets of each transition.
+
+        typedef std::vector<std::unordered_map<size_t, std::vector<int>>> SOURCE_IMPL;
+        typedef std::vector<std::optional<NTrans>> IMPL;
+        IMPL impl;
+        SOURCE_IMPL source_data;
+
+        // Helper functions to get indices in the data structures
+
+        inline size_t SItoID(const int state, const int in) const{
+            return size_t(in_alphabet_size) * size_t(state) + size_t(in);
+        }
 
 
 
-    inline const unsigned& out(unsigned state, unsigned in){
-        assert((*impl)[SItoID(state, in)].has_value());
-        return (*impl)[SItoID(state, in)]->out;
-
-    }
-
-    void setTransition(unsigned state, unsigned in, unsigned out){
-        (*impl)[SItoID(state, in)].emplace();
-        (*impl)[SItoID(state, in)]->out=out;
-    }
-
-    void addSucc(unsigned state, unsigned in, unsigned succ){
-        assert((*impl)[SItoID(state, in)]);
-        (*impl)[SItoID(state, in)]->successors.push_back(succ);
-        (*source_data)[succ][IOtoID(in,out(state,in))].emplace_back(state);
-    }
-
-    inline const std::vector<unsigned>&
-        succs(const unsigned state, const unsigned in){
-        assert((*impl)[SItoID(state, in)]);
-        return (*impl)[SItoID(state, in)]->successors;
-    }
-
-    inline void addStates(unsigned amount=1){
-        size+=amount;
-        (*impl).resize(size*in_alphabet_size);
-        (*source_data).resize(size*in_alphabet_size*out_alphabet_size);
-    }
+        inline size_t IOtoID(const int i, const int o) const{
+            return size_t(in_alphabet_size)*size_t(o)+ size_t(i);
+        }
 
 
+    public:
 
+        OFSM(int in_size, int out_size): FSM(in_size,out_size){
+        }
 
-    inline bool hasSources(unsigned state, unsigned in, unsigned out){
-        return (*source_data)[state].count(IOtoID(in, out));
-    }
+        OFSM(const OFSM& other)=default;
+
+        OFSM& operator=(const OFSM& other)=default;
+
+        OFSM(OFSM&& other):
+                FSM(other),
+                impl(std::move(other.impl)),
+                source_data(std::move(other.source_data))
+        {
+            other.reset();
+        }
+
+        OFSM& operator=(OFSM&& other){
+            FSM::operator=(other);
+            impl=std::move(other.impl);
+            source_data=std::move(other.source_data);
+            other.reset();
+            return *this;
+        }
 
 
 
-
-    inline const std::vector<unsigned>& sources(unsigned state, unsigned in, unsigned out){
-        assert(hasSources(state, in, out));
-        return (*source_data)[state][IOtoID(in, out)];
-    }
-
-    inline const std::unordered_map<size_t, std::vector<unsigned>>& sourceData(unsigned state){
-        return (*source_data)[state];
-    }
+        void reset(int in_size=0, int out_size=0){
+            FSM::reset(in_size,out_size);
+            impl.clear();
+            source_data.clear();
+        }
 
 
-    void print();
-};
+
+        inline bool hasTransition(const int state, const int in){
+            return impl[SItoID(state, in)].has_value();
+        }
+
+
+
+        inline const int& out(int state, int in){
+            assert(impl[SItoID(state, in)].has_value());
+            return impl[SItoID(state, in)]->out;
+
+        }
+
+        void setTransition(int state, int in, int out){
+            impl[SItoID(state, in)].emplace();
+            impl[SItoID(state, in)]->out=out;
+        }
+
+        void addSucc(int state, int in, int succ){
+            assert(impl[SItoID(state, in)]);
+            impl[SItoID(state, in)]->successors.push_back(succ);
+            source_data[succ][IOtoID(in,out(state,in))].emplace_back(state);
+        }
+
+        inline const std::vector<int>&
+        succs(const int state, const int in){
+            assert(impl[SItoID(state, in)]);
+            return (impl[SItoID(state, in)]->successors);
+        }
+
+        inline void addStates(int amount=1){
+            size+=amount;
+            impl.resize(size*in_alphabet_size);
+            source_data.resize(size*in_alphabet_size*out_alphabet_size);
+        }
+
+        inline bool hasSources(int state, int in, int out){
+            return source_data[state].count(IOtoID(in, out));
+        }
+
+
+
+
+        inline const std::vector<int>& sources(int state, int in, int out){
+            assert(hasSources(state, in, out));
+            return source_data[state][IOtoID(in, out)];
+        }
+
+        inline const std::unordered_map<size_t, std::vector<int>>& sourceData(int state){
+            return source_data[state];
+        }
+
+
+        void print();
+    };
 
 
 

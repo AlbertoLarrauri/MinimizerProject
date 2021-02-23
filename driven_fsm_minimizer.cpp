@@ -10,125 +10,51 @@
 #include <algorithm>
 
 #include "driven_fsm_minimizer.h"
+#include "machine_builders.h"
 
 using namespace machines;
 namespace minimizers {
+
     void DrivenFSMMinimizer::buildOFSM() {
-        if (driver.getSize() == 0 || driver.getSize() == 0) {
-            ofsm_init = true;
-            return;
-        }
-        unsigned inputs = driver.numberOfInputs();
-        unsigned size1 = driver.getSize();
-        unsigned size2 = driven.getSize();
-        auto ID = [size2](unsigned state1, unsigned state2) {
-            return size2 * state1 + state2;
-        };
-//        std::vector<bool> added(size1*size2);
-//        std::vector<bool> explored(size1*size2);
-//        std::vector<unsigned> state_map;
-//        std::deque<unsigned> unexplored;
-        std::unordered_map<unsigned, unsigned> state_map;
-        std::unordered_set<unsigned> unexplored(driven.getSize() * driver.getSize());
-        unsigned max_state = 0;
-        unexplored.insert(0);
-        state_map[ID(0, 0)] = 0;
-        obs_fsm.addStates(1);
-        while (!unexplored.empty()) {
-            unsigned pair = *unexplored.begin();
-
-            unsigned state12 = state_map[pair];
-
-            unsigned state1 = pair / size2;
-            unsigned state2 = pair % size2;
-
-            unsigned unexplored_succs = 0;
-
-            for (unsigned i = 0; i < inputs; ++i) {
-                unsigned o = driver.out(state1, i);
-                unsigned t = driven.out(state2, o);
-                unsigned next1 = driver.succ(state1, i);
-                unsigned next2 = driven.succ(state2, o);
-                unsigned next12;
-                unsigned next_pair = ID(next1, next2);
-
-                if (!state_map.count(next_pair)) {
-                    obs_fsm.addStates();
-                    state_map[next_pair] = ++max_state;
-                    next12 = max_state;
-                    unexplored.insert(next_pair);
-                } else next12 = state_map[next_pair];
-
-
-                if (!obs_fsm.hasTransition(state_map[pair], o)) {
-                    obs_fsm.setTransition(state12, o, t);
-                }
-                if (!obs_fsm.hasSources(next12, o, t) ||
-                    obs_fsm.sources(next12, o, t).back() != state12) {
-                    obs_fsm.addSucc(state12, o, next12);
-                }
-            }
-
-            unexplored.erase(pair);
-            obs_fsm.addStates(unexplored_succs);
-
-        }
-
-        ofsm_init = true;
-        matrix_up_to_date = false;
-        matrix_processed = false;
-        return;
+        ofsm=std::make_unique<OFSM>(builders::buildOFSM(driver, driven));
     }
 
 
     void DrivenFSMMinimizer::buildCMatrix() {
-        if (!ofsm_init) {
-            std::cout << " Observation FSM not built yet. \n";
-            return;
-        }
+        // TODO: This should be an exception
+        if(ofsm == nullptr) throw "OFSM has not been built yet";
 
-        const unsigned &size = obs_fsm.getSize();
-        const unsigned &inputs = obs_fsm.numberOfInputs();
-        compat_matrix.clear();
-        compat_matrix.resize((size * (size + 1)) / 2);
-        std::deque<std::pair<unsigned, unsigned>> modified;
+        const int size = ofsm->getSize();
+        const int inputs = ofsm->numberOfInputs();
+        compat_matrix=std::make_unique<CompatMatrix>(size);
 
-        for (unsigned state1 = 1; state1 < size; ++state1) {
-            for (unsigned state2 = 0; state2 < state1; ++state2) {
-                size_t current_pair = toCMatrixID(state1, state2);
-                if (compat_matrix[current_pair]) continue;
-                for (unsigned i = 0; i < inputs; ++i) {
-                    if (obs_fsm.hasTransition(state1, i) &&
-                        obs_fsm.hasTransition(state2, i) &&
-                            (obs_fsm.out(state1, i) != obs_fsm.out(state2, i))) {
-//                            if((state1==2 && state2==3) ||(state2==2 && state1==3)){
-//                            std::cout<<"BUGAZO \n";
-//                            std::cout<<"Input: "<<i<<"\n";
-//                            std::cout<<"Outputs: "<<obs_fsm.out(state1, i)<<", "<<obs_fsm.out(state2, i)<<"\n";
-//                            }
-                        compat_matrix[current_pair] = true;
+        std::deque<std::pair<int,int>> modified;
+
+        for (int state1 = 1; state1 < size; ++state1) {
+            for (int state2 = 0; state2 < state1; ++state2) {
+                if (compat_matrix->areIncompatible(state1,state2)) continue;
+
+                for (int i = 0; i < inputs; ++i) {
+                    if (ofsm->hasTransition(state1, i) &&
+                        ofsm->hasTransition(state2, i) &&
+                        (ofsm->out(state1, i) != ofsm->out(state2, i))) {
+                        compat_matrix->setIncompatible(state1,state2);
                         modified.emplace_back(state1, state2);
 
                         while (!modified.empty()) {
-
                             auto mstate1 = modified.front().first;
                             auto mstate2 = modified.front().second;
                             modified.pop_front();
-                            auto sources1 = obs_fsm.sourceData(mstate1);
-                            auto sources2 = obs_fsm.sourceData(mstate2);
-
+                            auto& sources1 = ofsm->sourceData(mstate1);
+                            auto& sources2 = ofsm->sourceData(mstate2);
                             for (auto pair:sources1) {
                                 if (sources2.count(pair.first)) {
                                     auto parents1 = pair.second;
-                                    auto parents2 = sources2[pair.first];
+                                    auto parents2 = sources2.at(pair.first);
                                     for (auto parent1:parents1) {
                                         for (auto parent2:parents2) {
-//                                            if((parent1==2 && parent2==3) ||(parent2==2 && parent1==3)){
-//                                                std::cout<<"BUGAZO";
-//                                            }
-                                            auto parent_pair = toCMatrixID(parent1, parent2);
-                                            if (compat_matrix[parent_pair]) continue;
-                                            compat_matrix[parent_pair] = true;
+                                            if (compat_matrix->areIncompatible(parent1,parent2)) continue;
+                                            compat_matrix->setIncompatible(parent1,parent2);
                                             modified.emplace_back(parent1, parent2);
                                         }
                                     }
@@ -139,65 +65,12 @@ namespace minimizers {
                 }
             }
         }
-        matrix_up_to_date = true;
-        matrix_processed = false;
+
+        if(generate_clique){
+            big_clique=compat_matrix->computeLargeClique();
+        }
     }
 
-    void DrivenFSMMinimizer::processCMatrix() {
-        if (!matrix_up_to_date) {
-            std::cout << "Compatibility matrix is not up-to-date. \n";
-            return;
-        }
-        const unsigned &size = obs_fsm.getSize();
-
-        incompatible_pairs.clear();
-        big_clique.clear();
-
-        std::vector<unsigned> incompatibility_scores(size);
-
-
-        for (unsigned state1 = 1; state1 < size; ++state1) {
-            for (unsigned state2 = 0; state2 < state1; ++state2) {
-                if (compat_matrix[toCMatrixID(state1, state2)]) {
-                    ++incompatibility_scores[state1];
-                    ++incompatibility_scores[state2];
-                    incompatible_pairs.push_back(size * state1 + state2);
-                }
-            }
-
-        }
-
-
-        if (incompatible_pairs.empty()) {
-            big_clique.push_back(0);
-            matrix_processed = true;
-            return;
-        }
-
-
-        auto comparator = [incompatibility_scores](unsigned state1, unsigned state2) -> bool {
-            return (incompatibility_scores[state1] < incompatibility_scores[state2]);
-        };
-
-
-        std::vector<unsigned> ordered_states(size);
-        std::iota(ordered_states.begin(), ordered_states.end(), 0);
-        std::sort(ordered_states.begin(), ordered_states.end(), comparator);
-        big_clique.push_back(ordered_states[0]);
-
-        for (unsigned stateID = 1; stateID < size; ++stateID) {
-            unsigned const &state1 = ordered_states[stateID];
-            bool valid = true;
-            for (unsigned state2:big_clique) {
-                if (!compat_matrix[toCMatrixID(state1, state2)]) {
-                    valid = false;
-                    break;
-                }
-            }
-            if (valid) big_clique.push_back(state1);
-        }
-        matrix_processed = true;
-    }
 
 
     void DrivenFSMMinimizer::printIncompatibles() {
@@ -207,9 +80,9 @@ namespace minimizers {
         }
         std::cout << "Pairs of incompatible states in the Observation Machine: ";
         bool first = true;
-        for (unsigned state1 = 0; state1 < obs_fsm.getSize(); ++state1) {
-            for (unsigned state2 = 0; state2 < state1; ++state2) {
-                if (compat_matrix[toCMatrixID(state1, state2)]) {
+        for (int state1 = 0; state1 < ofsm->getSize(); ++state1) {
+            for (int state2 = 0; state2 < state1; ++state2) {
+                if (compat_matrix->areIncompatible(state1, state2)) {
                     if (!first) {
                         std::cout << ", ";
                     } else first = false;
@@ -227,7 +100,7 @@ namespace minimizers {
         }
         std::cout << "Clique of incompatible states: ";
         bool first = true;
-        for (unsigned state:big_clique) {
+        for (int state:big_clique) {
             if (!first) std::cout << ", ";
             std::cout << state;
             first = false;
@@ -238,19 +111,19 @@ namespace minimizers {
 
     void DrivenFSMMinimizer::buildInitialCNF() {
         current_size = big_clique.size();
-        const unsigned &size = obs_fsm.getSize();
+        const int &size = ofsm->getSize();
         state_class_vars.resize(size * current_size);
-        class_class_vars.resize(current_size * current_size * obs_fsm.numberOfInputs());
+        class_class_vars.resize(current_size * current_size * ofsm->numberOfInputs());
 //@ Creating state-class variables
 
-        for (unsigned Class = 0; Class < current_size; ++Class) {
-            for (unsigned state = 0; state < size; ++state) {
+        for (int Class = 0; Class < current_size; ++Class) {
+            for (int state = 0; state < size; ++state) {
                 state_class_vars[stateClassToID(state, Class)] = max_var;
                 ++max_var;
             }
 
-            for (unsigned Class2 = 0; Class2 < current_size; ++Class2) {
-                for (unsigned i = 0; i < obs_fsm.numberOfInputs(); ++i) {
+            for (int Class2 = 0; Class2 < current_size; ++Class2) {
+                for (int i = 0; i < ofsm->numberOfInputs(); ++i) {
                     class_class_vars[CCiToID(Class, Class2, i)] = max_var;
                     ++max_var;
                 }
@@ -261,9 +134,9 @@ namespace minimizers {
 
         solver.new_vars(max_var);
 
-        for (unsigned Class = 0; Class < current_size; ++Class) {
+        for (int Class = 0; Class < current_size; ++Class) {
             std::vector<CMSat::Lit> clause;
-            unsigned state = big_clique[Class];
+            int state = big_clique[Class];
 
             if (!state) initial_covered = true;
 
@@ -283,11 +156,11 @@ namespace minimizers {
         buildFrameCNF();
 
 //        std::cout<<"Incompatibility clauses: \n";
-        for (unsigned Class = 0; Class < current_size; ++Class) {
-            for (size_t pair:incompatible_pairs) {
-                unsigned state1 = pair / size;
-                unsigned state2 = pair % size;
-                assert(compat_matrix[toCMatrixID(state1,state2)]);
+        for (int Class = 0; Class < current_size; ++Class) {
+            for (auto pair:compat_matrix->getPairs()) {
+                int state1 = pair.first;
+                int state2 = pair.second;
+                assert(compat_matrix->areIncompatible(state1,state2));
                 assert(state1!=state2);
                 std::vector<CMSat::Lit> clause;
                 clause.reserve(2);
@@ -299,14 +172,14 @@ namespace minimizers {
         }
 //
 //        std::cout<<"Successor clauses: \n";
-        for (unsigned Class1 = 0; Class1 < current_size; ++Class1) {
-            for (unsigned i = 0; i < obs_fsm.numberOfInputs(); ++i) {
-                for (unsigned Class2 = 0; Class2 < current_size; ++Class2) {
-                    for (unsigned state1 = 0; state1 < size; ++state1) {
-                        if (!obs_fsm.hasTransition(state1, i)) continue;
-                        auto succs = obs_fsm.succs(state1, i);
+        for (int Class1 = 0; Class1 < current_size; ++Class1) {
+            for (int i = 0; i < ofsm->numberOfInputs(); ++i) {
+                for (int Class2 = 0; Class2 < current_size; ++Class2) {
+                    for (int state1 = 0; state1 < size; ++state1) {
+                        if (!ofsm->hasTransition(state1, i)) continue;
+                        auto succs = ofsm->succs(state1, i);
 //                            std::cout<<"\n\n Loop beguins: \n";
-                        for (unsigned state2:succs) {
+                        for (int state2:succs) {
 //                            std::cout<<"Successor: "<<state2<<"\n";
                             std::vector<CMSat::Lit> clause;
                             clause.reserve(3);
@@ -326,6 +199,7 @@ namespace minimizers {
     void DrivenFSMMinimizer::tryMinimize() {
         std::vector<CMSat::Lit> size_assumption;
         size_assumption.emplace_back(size_vars.back(), false);
+        std::cout << "\n Number of variables: " <<max_var<<".\n";
         auto possible = solver.solve(&size_assumption);
         if (possible == CMSat::l_False) {
             std::cout << "Not able to minimize with size: " <<current_size<<".\n";
@@ -339,14 +213,16 @@ namespace minimizers {
         }
 
         std::vector<CMSat::lbool> model = solver.get_model();
-        const unsigned &result_size =current_size;
-        const unsigned &size = obs_fsm.getSize();
-        result.addStates(result_size);
+        const int &result_size =current_size;
+        const int &size = ofsm->getSize();
+        result=std::make_unique<DFSM>(driven.numberOfInputs(),
+                                      driven.numberOfOutputs());
+        result->addStates(result_size);
 
-        std::vector<unsigned> classIDs(result_size);
+        std::vector<int> classIDs(result_size);
 
         bool initial_found = false;
-        for (unsigned Class = 0; Class < result_size; ++Class) {
+        for (int Class = 0; Class < result_size; ++Class) {
             if (!initial_found && model[state_class_vars[stateClassToID(0, Class)]] == CMSat::l_True) {
                 initial_found = true;
                 classIDs[Class] = 0;
@@ -360,43 +236,43 @@ namespace minimizers {
             }
         }
 
-        for (unsigned Class1 = 0; Class1 < result_size; ++Class1) {
-            for (unsigned i = 0; i < obs_fsm.numberOfInputs(); ++i) {
-                for (unsigned Class2 = 0; Class2 < result_size; ++Class2) {
+        for (int Class1 = 0; Class1 < result_size; ++Class1) {
+            for (int i = 0; i < ofsm->numberOfInputs(); ++i) {
+                for (int Class2 = 0; Class2 < result_size; ++Class2) {
                     if (model[class_class_vars[CCiToID(Class1, Class2, i)]] == CMSat::l_True) {
-                        result.succ(classIDs[Class1], i) = classIDs[Class2];
+                        result->setSucc(classIDs[Class1], i, classIDs[Class2]);
                     }
                 }
                 bool out_found = false;
-                for (unsigned state = 0; state < size; ++state) {
+                for (int state = 0; state < size; ++state) {
                     if (model[state_class_vars[stateClassToID(state, Class1)]] == CMSat::l_True) {
-                        if (obs_fsm.hasTransition(state, i)) {
-                            result.out(classIDs[Class1], i) = obs_fsm.out(state, i);
+                        if (ofsm->hasTransition(state, i)) {
+                            result->setOut(classIDs[Class1], i, ofsm->out(state, i));
                             out_found = true;
                         }
                     }
                 }
-                if (!out_found) result.out(classIDs[Class1], i) = 0;
+                if (!out_found) result->setOut(classIDs[Class1], i, 0);
             }
         }
 
-        printResult();
+        //printResult();
     }
 
 
     void DrivenFSMMinimizer::printResult() {
         std::cout << "Minimized machine table: \n";
-        result.print();
+        result->print();
     }
 
 
     void DrivenFSMMinimizer::buildFrameCNF() {
 
-        for (unsigned Class1 = 0; Class1 < current_size; ++Class1) {
-            for (unsigned i = 0; i < obs_fsm.numberOfInputs(); ++i) {
+        for (int Class1 = 0; Class1 < current_size; ++Class1) {
+            for (int i = 0; i < ofsm->numberOfInputs(); ++i) {
                 std::vector<CMSat::Lit> clause;
                 clause.reserve(current_size+1);
-                for (unsigned Class2 = 0; Class2 < current_size; ++Class2) {
+                for (int Class2 = 0; Class2 < current_size; ++Class2) {
 //                    std::cout<<"\n\n\n";
 //                    std::cout<<"States: "<<Class1<<", "<<Class2<<"\n";
 //                    std::cout<<"ID: "<<elegant_pairing(Class1,Class2)<<", "<<CCiToID(Class1, Class2, i)<<","<<class_class_vars[CCiToID(Class1, Class2, i)]<< "\n";
@@ -413,7 +289,7 @@ namespace minimizers {
     void DrivenFSMMinimizer::buildInitialCoverCNF() {
         std::vector<CMSat::Lit> clause;
         clause.reserve(current_size+1);
-        for (unsigned Class = 0; Class < current_size; ++Class) {
+        for (int Class = 0; Class < current_size; ++Class) {
             size_t var = state_class_vars[stateClassToID(0, Class)];
             clause.emplace_back(var, false);
         }
@@ -428,12 +304,12 @@ namespace minimizers {
 
 
     void DrivenFSMMinimizer::buildIncrementalClauses() {
-        const unsigned &size = obs_fsm.getSize();
+        const int &size = ofsm->getSize();
 //       std::cout<<"Incompatibility clauses: \n";
-        for (size_t pair:incompatible_pairs) {
-            unsigned state1 = pair / size;
-            unsigned state2 = pair % size;
-            assert(compat_matrix[toCMatrixID(state1,state2)]);
+        for (auto pair:compat_matrix->getPairs()) {
+            int state1 = pair.first;
+            int state2 = pair.second;
+            assert(compat_matrix->areIncompatible(state1,state2));
             std::vector<CMSat::Lit> clause;
             clause.reserve(2);
             clause.emplace_back(state_class_vars[stateClassToID(state1, current_size-1)], true);
@@ -443,13 +319,13 @@ namespace minimizers {
         }
 
 //        std::cout<<"Successor clauses: \n";
-        for (unsigned Class = 0; Class < current_size; ++Class) {
-            for (unsigned i = 0; i < obs_fsm.numberOfInputs(); ++i) {
-                for (unsigned state1 = 0; state1 < size; ++state1) {
-                    if (!obs_fsm.hasTransition(state1, i)) continue;
+        for (int Class = 0; Class < current_size; ++Class) {
+            for (int i = 0; i < ofsm->numberOfInputs(); ++i) {
+                for (int state1 = 0; state1 < size; ++state1) {
+                    if (!ofsm->hasTransition(state1, i)) continue;
 
-                    auto succs = obs_fsm.succs(state1, i);
-                    for (unsigned state2:succs) {
+                    auto succs = ofsm->succs(state1, i);
+                    for (int state2:succs) {
                         std::vector<CMSat::Lit> clause1;
                         std::vector<CMSat::Lit> clause2;
                         clause1.reserve(3);
@@ -474,18 +350,18 @@ namespace minimizers {
 
     void DrivenFSMMinimizer::generateIncrementalVars() {
         size_t initial_vars=max_var;
-        const unsigned &size = obs_fsm.getSize();
+        const int &size = ofsm->getSize();
         state_class_vars.resize(size * current_size);
-        class_class_vars.resize(current_size * current_size * obs_fsm.numberOfInputs());
+        class_class_vars.resize(current_size * current_size * ofsm->numberOfInputs());
 //@ Creating state-class variables
 
-        for (unsigned state = 0; state < size; ++state) {
+        for (int state = 0; state < size; ++state) {
             state_class_vars[stateClassToID(state, current_size-1)] = max_var;
             ++max_var;
         }
-        for (unsigned i = 0; i < obs_fsm.numberOfInputs(); ++i) {
+        for (int i = 0; i < ofsm->numberOfInputs(); ++i) {
 
-            for (unsigned Class2 = 0; Class2 < current_size-1; ++Class2) {
+            for (int Class2 = 0; Class2 < current_size-1; ++Class2) {
 
                 class_class_vars[CCiToID(current_size-1, Class2, i)] = max_var;
                 ++max_var;
@@ -514,8 +390,8 @@ namespace minimizers {
     }
 
     void DrivenFSMMinimizer::solve() {
-        solver.set_allow_otf_gauss();
-        std::cout<<"Observation FSM size: "<<obs_fsm.getSize()<<". \n";
+//        solver.set_allow_otf_gauss();
+        std::cout << "Observation FSM size: " << ofsm->getSize() << ". \n";
 //        std::cout<<"Impostor: "<<initial_covered<<"\n";
         buildInitialCNF();
         tryMinimize();

@@ -5,8 +5,9 @@
 #include <unordered_set>
 #include "builders.h"
 
+using namespace SBCMin;
 
-SBCMin::OFA SBCMin::builders::buildOFSM(const DFSM& driver, const DFSM& driven){
+OFA SBCMin::buildOFA(const DFSM& driver, const DFSM& driven){
     OFA obs_fsm(driven.numberOfInputs(), driven.numberOfOutputs());
     if (driver.getSize() == 0 || driver.getSize() == 0) {
         return obs_fsm;
@@ -66,4 +67,3 @@ SBCMin::OFA SBCMin::builders::buildOFSM(const DFSM& driver, const DFSM& driven){
 
     return obs_fsm;
 }
-

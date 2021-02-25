@@ -77,7 +77,7 @@ namespace SBCMin {
             return (state2 * (state2 + 1)) / 2 + state1;
         }
 
-        void buildFrameCNF();
+        void buildFrameClauses();
 
         void buildInitialCoverCNF();
 

@@ -5,42 +5,84 @@
 #ifndef PMIN_OFA_MINIMIZER_H
 #define PMIN_OFA_MINIMIZER_H
 
+
 #include "../machines/machines.h"
-//#include "compat_matrix.h"
+#include "cryptominisat5/cryptominisat.h"
+#include "compat_matrix.h"
+
 
 namespace SBCMin {
 
-    class CompatMatrix;
+    class OFACNFBuilder;
 
-    namespace OFA_CNFBuilders {
-        class CNFBuilder;
-    };
+    class CompatMatrix;
 
     class OFAMinimizer {
 
+    public:
+        enum CNFBuilders {
+            BASIC_INCREMENTAL,
+        };
+
+
     private:
 
-        using CNFBuilder=OFA_CNFBuilders::CNFBuilder;
-
         OFA &ofa;
+        const DFSM *result;
+        std::unique_ptr<CompatMatrix> compat_matrix_ptr;
+        std::unique_ptr<OFACNFBuilder> cnf_builder_ptr;
 
-        std::unique_ptr<CompatMatrix> compat_matrix;
-        std::unique_ptr<CNFBuilder> cnf_builder;
+        bool clique_needed = true;
+        CNFBuilders builder_type =BASIC_INCREMENTAL;
 
-        std::unique_ptr<DFSM> result;
-        std::vector<int> big_clique;
-
-        void generateMatrix();
 
     public:
 
 
-        OFAMinimizer(OFA &_ofa) : ofa(_ofa) {
+        inline OFAMinimizer(OFA &_ofa) : ofa(_ofa) {};
+
+        inline void withClique(bool flag) {
+            clique_needed = flag;
         }
 
-        DFSM& minimize();
+        inline void setCNFBuilder(CNFBuilders type){
+            builder_type=type;
+        }
+
+
+        void run();
+
+        inline const DFSM &getResult(){
+            try {
+                if (result==nullptr) throw(0);
+                return *result;
+            } catch(int){
+                std::cout<<"Result not obtained yet. NULLPTR returned \n";
+            }
+        }
 
     };
+
+
+    class OFACNFBuilder {
+    private:
+
+        virtual bool trySolve() = 0;
+
+        virtual void init() = 0;
+
+        virtual void step() = 0;
+
+        virtual void computeSolution() = 0;
+
+    public:
+
+        virtual const DFSM &getResult() = 0;
+
+        void run();
+
+    };
+
 }
 
 

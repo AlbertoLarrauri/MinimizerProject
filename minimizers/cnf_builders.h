@@ -9,41 +9,29 @@
 #include "cryptominisat5/cryptominisat.h"
 #include "compat_matrix.h"
 
-namespace SBCMin::OFA_CNFBuilders {
+namespace SBCMin::OFACNFBuilders {
 
 
-    class CNFBuilder {
+    class BasicIncremental : public OFACNFBuilder {
     private:
 
-        virtual bool trySolve() = 0;
-
-        virtual void init() = 0;
-
-        virtual void step() = 0;
-
-        virtual DFSM getSolution() = 0;
-
-    public:
-
-        DFSM solve();
-
-    };
-
-
-    class BasicIncremental : public CNFBuilder {
-    private:
         std::unique_ptr<CMSat::SATSolver> solver;
+        std::unique_ptr<DFSM> result;
 
         int max_var;
         int current_size;
-        bool initial_covered=false;
-        bool incremented=false;
-        CompatMatrix &compat_matrix;
-        OFA &ofa;
+        bool initial_covered = false;
+        bool incremented = false;
+
+        const CompatMatrix &compat_matrix;
+        const std::vector<int>& partial_solution;
+        const OFA &ofa;
 
         std::vector<size_t> state_class_vars;
         std::vector<size_t> class_class_vars;
         std::vector<size_t> size_vars;
+
+
 
         size_t stateClassToID(int state, int Class);
 
@@ -51,9 +39,9 @@ namespace SBCMin::OFA_CNFBuilders {
 
         size_t CCiToID(int Class1, int Class2, int input);
 
-        size_t& stateClassVar(int state, int var);
+        size_t &stateClassVar(int state, int var);
 
-        size_t& classClassVar(int Class1, int Class2, int input);
+        size_t &classClassVar(int Class1, int Class2, int input);
 
 
         bool trySolve() override;
@@ -62,9 +50,9 @@ namespace SBCMin::OFA_CNFBuilders {
 
         void step() override;
 
-        DFSM getSolution() override;
+        void computeSolution() override;
 
-        void buildFrameCNF();
+        void buildFrameClauses();
 
         void buildCoverClauses();
 
@@ -75,6 +63,15 @@ namespace SBCMin::OFA_CNFBuilders {
     public:
 
         BasicIncremental(OFA &_ofa, CompatMatrix &_compat_matrix);
+
+        inline const DFSM &getResult() override{
+            try {
+                if (result==nullptr) throw(0);
+                return *result;
+            } catch(int){
+                std::cout<<"Result not obtained yet. NULLPTR returned \n";
+            }
+        }
 
 
     };

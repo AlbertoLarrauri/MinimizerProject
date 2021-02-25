@@ -7,21 +7,16 @@
 
 
 #include <memory>
+#include <unordered_set>
 #include "machines.h"
 
 namespace SBCMin {
-    namespace builders {
-        OFA buildOFSM(const DFSM &driver, const DFSM &driven);
 
-        DFSM buildCascadeDFSM(const DFSM &driver, const DFSM &driven);
+    OFA buildOFA(const DFSM &driver, const DFSM &driven);
 
 
-    }
-
+    DFSM buildCascadeDFSM(const DFSM &driver, const DFSM &driven);
 }
-
-
-
 
 
 #endif //PMIN_BUILDERS_H

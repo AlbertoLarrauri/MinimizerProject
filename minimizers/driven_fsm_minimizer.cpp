@@ -11,6 +11,7 @@
 
 #include "driven_fsm_minimizer.h"
 #include "../machines/builders.h"
+#include "../machines/builders.h"
 
 using namespace SBCMin;
 
@@ -151,7 +152,7 @@ void DrivenFSMMinimizer::buildInitialCNF() {
     }
 //        Machine structure clauses
 //        std::cout<<"Frame clauses: \n";
-    buildFrameCNF();
+    buildFrameClauses();
 
 //        std::cout<<"Incompatibility clauses: \n";
     for (int Class = 0; Class < current_size; ++Class) {
@@ -200,8 +201,8 @@ void DrivenFSMMinimizer::tryMinimize() {
     std::cout << "\n Number of variables: " << max_var << ".\n";
     auto possible = solver.solve(&size_assumption);
     if (possible == CMSat::l_False) {
-        std::cout << "Not able to minimize with size: " << current_size << ".\n";
-//            possible=solver.solve();
+        std::cout << "Not able to run with size: " << current_size << ".\n";
+//            possible=solver.run();
 //            std::cout<<"With no size assumption: "<< possible<<" \n";
 //            std::cout<<"Assumption number: "<< size_vars.back()<<" \n";
         return;
@@ -264,7 +265,7 @@ void DrivenFSMMinimizer::printResult() {
 }
 
 
-void DrivenFSMMinimizer::buildFrameCNF() {
+void DrivenFSMMinimizer::buildFrameClauses() {
 
     for (int Class1 = 0; Class1 < current_size; ++Class1) {
         for (int i = 0; i < ofa->numberOfInputs(); ++i) {
@@ -380,7 +381,7 @@ void DrivenFSMMinimizer::incrementCNF() {
     incremented = true;
     generateIncrementalVars();
 //        std::cout<<"Frame clauses: \n";
-    buildFrameCNF();
+    buildFrameClauses();
 //        std::cout<<"Initial cover clauses: \n";
     if (!initial_covered) buildInitialCoverCNF();
     buildIncrementalClauses();

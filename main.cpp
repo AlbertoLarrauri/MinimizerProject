@@ -5,39 +5,34 @@
 #include<chrono>
 #include<optional>
 #include "machines/machines.h"
-#include "machines/minimizers/driven_fsm_minimizer.h"
+#include "machines/builders.h"
+#include "minimizers/ofa_minimizer.h"
+//#include "machines/minimizers/driven_fsm_minimizer.h"
 
 #include "cryptominisat5/cryptominisat.h"
+#include "machines/builders.h"
+
+
+int main() {
+
+
+    SBCMin::DFSM A(2, 2);
+    SBCMin::DFSM B(2, 2);
+
+
+    makeRandomDFSM(8, A);
+    makeRandomDFSM(20, B);
+
+    SBCMin::OFA ofa = SBCMin::buildOFA(A, B);
+    SBCMin::OFAMinimizer minimizer(ofa);
+    minimizer.run();
+    SBCMin::DFSM B2 = minimizer.getResult();
 
 
 
-int main()
-{
 
 
-    DFSM A(2,2);
-    DFSM B(2,2);
 
-
-    makeRandomDFSM(8,A);
-    makeRandomDFSM(20,B);
-
-    std::cout<<"Driver machine table: \n";
-    A.print();
-    std::cout<<"\nDriven machine table: \n";
-    B.print();
-    minimizers::DrivenFSMMinimizer minimizer(A,B);
-    minimizer.buildOFSM();
-//    const OFA& O=minimizer.getOFSM();
-//  std::cout<<"\nObservation machine table: \n";
-//   O.print();
-
-    minimizer.buildCMatrix();
-//    minimizer.check();
-
-////   minimizer.printIncompatibles();
-////   minimizer.printBigClique();
-    minimizer.solve();
 ////    minimizer.printResult();
 //
 
@@ -46,5 +41,5 @@ int main()
     return 0;
 
 
-
+}
 

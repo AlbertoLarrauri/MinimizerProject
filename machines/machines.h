@@ -51,24 +51,7 @@ namespace SBCMin
     };
 
     class OFA;
-    class NTrans;
-    class DTrans;
     class DFSM;
-
-
-
-    class DTrans{
-    public:
-        int out;
-        int next;
-    };
-
-    class NTrans{
-    public:
-        int out;
-        std::vector<int> successors;
-
-    };
 
 
 
@@ -81,6 +64,12 @@ namespace SBCMin
 
     class DFSM: public virtual FSM{
     private:
+
+        class DTrans{
+        public:
+            int out;
+            int next;
+        };
 
         // Transition data:
 
@@ -157,6 +146,14 @@ namespace SBCMin
 
     private:
 
+        class NTrans{
+        public:
+            int out;
+            std::vector<int> successors;
+
+        };
+
+
         // Transition data. We keep track of sources and targets of each transition.
 
         typedef std::vector<std::unordered_map<size_t, std::vector<int>>> SOURCE_IMPL;
@@ -212,13 +209,13 @@ namespace SBCMin
 
 
 
-        inline bool hasTransition(const int state, const int in){
+        inline bool hasTransition(const int state, const int in) const {
             return impl[SItoID(state, in)].has_value();
         }
 
 
 
-        inline const int& out(int state, int in){
+        inline const int & out(int state, int in) const {
             assert(impl[SItoID(state, in)].has_value());
             return impl[SItoID(state, in)]->out;
 
@@ -235,8 +232,8 @@ namespace SBCMin
             source_data[succ][IOtoID(in,out(state,in))].emplace_back(state);
         }
 
-        inline const std::vector<int>&
-        succs(const int state, const int in){
+        inline const std::vector<int> &
+        succs(const int state, const int in) const {
             assert(impl[SItoID(state, in)]);
             return (impl[SItoID(state, in)]->successors);
         }

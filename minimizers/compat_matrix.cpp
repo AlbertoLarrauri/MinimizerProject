@@ -7,7 +7,7 @@
 
 using namespace SBCMin;
 
-inline size_t CompatMatrix::toID(int state1, int state2) {
+inline size_t CompatMatrix::toID(int state1, int state2) const {
     if (state1 >= state2) {
         return (state1 * (state1 + 1)) / 2 + state2;
     }
@@ -63,6 +63,8 @@ CompatMatrix::CompatMatrix(OFA &ofa, bool _is_clique_needed) :
 
     if (is_clique_needed) {
         computeLargeClique();
+    } else {
+        big_clique.push_back(0);
     }
 }
 
@@ -117,17 +119,8 @@ void CompatMatrix::setIncompatible(int state1, int state2) {
 }
 
 
-bool inline CompatMatrix::areIncompatible(int state1, int state2) {
+bool inline CompatMatrix::areIncompatible(int state1, int state2) const {
     return impl[toID(state1, state2)];
 }
 
 
-inline std::vector<std::pair<int, int>> &CompatMatrix::getPairs() {
-    return pairs;
-}
-
-std::vector<int> &CompatMatrix::getClique() {
-    //TODO: this should be an exception
-    if (!is_clique_needed) throw "Clique generation was disabled";
-    return big_clique;
-}

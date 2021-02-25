@@ -23,8 +23,7 @@ namespace SBCMin {
         std::vector<int> incompat_scores;
         std::vector<int> big_clique;
 
-
-        size_t toID(int state1, int state2);
+        size_t toID(int state1, int state2) const;
 
         void computeLargeClique();
 
@@ -32,13 +31,20 @@ namespace SBCMin {
 
         CompatMatrix(OFA &ofa, bool _is_clique_needed = true);
 
-        std::vector<int> &getClique();
-
-        bool areIncompatible(int state1, int state2);
+        bool areIncompatible(int state1, int state2) const;
 
         void setIncompatible(int state1, int state2);
 
-        std::vector<std::pair<int, int>> &getPairs();
+        inline const std::vector<std::pair<int, int>> & getPairs() const {
+            return pairs;
+        }
+
+
+
+
+        inline const std::vector<int> & getClique() const {
+            return big_clique;
+        }
 
 
     };

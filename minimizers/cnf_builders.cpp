@@ -50,90 +50,79 @@ void BasicIncremental::init() {
     const int &size = ofa.getSize();
     state_class_vars.resize(size * current_size);
     class_class_vars.resize(current_size * current_size * ofa.numberOfInputs());
-
-
-/// Creating state-class variables
+//@ Creating state-class variables
 
     for (int Class = 0; Class < current_size; ++Class) {
         for (int state = 0; state < size; ++state) {
-            stateClassVar(state, Class) = max_var;
+            state_class_vars[stateClassToID(state, Class)] = max_var;
             ++max_var;
         }
 
         for (int Class2 = 0; Class2 < current_size; ++Class2) {
             for (int i = 0; i < ofa.numberOfInputs(); ++i) {
-                classClassVar(Class, Class2, i) = max_var;
+                class_class_vars[CCiToID(Class, Class2, i)] = max_var;
                 ++max_var;
             }
         }
     }
-
-    /// Adding size assumption
-
     size_vars.push_back(max_var);
     ++max_var;
 
-
     solver->new_vars(max_var);
 
-
-
-    /// Encode partial solution
-
-    for (int Class = 0; Class < partial_solution.size(); ++Class) {
+    for (int Class = 0; Class < current_size; ++Class) {
         std::vector<CMSat::Lit> clause;
         int state = partial_solution[Class];
 
         if (!state) initial_covered = true;
 
-        size_t var = state_class_vars[stateClassVar(state, Class)];
+        size_t var = state_class_vars[stateClassToID(state, Class)];
         clause.emplace_back(var, false);
-        solver->add_clause(clause);
+//            std::cout<<clause<<"\n";
+        solver->add_clause(clause);;
     }
 
-    /// If partial solution does not contain initial state we have to add "cover clauses"
 
     if (!initial_covered) {
-
+//            std::cout<<"Initial cover clauses: \n";
         buildCoverClauses();
     }
-
-    //// Build frame clauses;
-
+//        Machine structure clauses
+//        std::cout<<"Frame clauses: \n";
     buildFrameClauses();
 
-    /// Build compatibility clauses;
-
+//        std::cout<<"Incompatibility clauses: \n";
     for (int Class = 0; Class < current_size; ++Class) {
         for (auto pair:compat_matrix.getPairs()) {
             int state1 = pair.first;
             int state2 = pair.second;
+            assert(compat_matrix.areIncompatible(state1, state2));
+            assert(state1 != state2);
             std::vector<CMSat::Lit> clause;
             clause.reserve(2);
-            clause.emplace_back(stateClassVar(state1, Class), true);
-            clause.emplace_back(stateClassVar(state2, Class), true);
-
+            clause.emplace_back(state_class_vars[stateClassToID(state1, Class)], true);
+            clause.emplace_back(state_class_vars[stateClassToID(state2, Class)], true);
+//                std::cout<<clause<<"\n";
             solver->add_clause(clause);
         }
     }
-
-    /// Build successor clauses
-
+//
+//        std::cout<<"Successor clauses: \n";
     for (int Class1 = 0; Class1 < current_size; ++Class1) {
         for (int i = 0; i < ofa.numberOfInputs(); ++i) {
             for (int Class2 = 0; Class2 < current_size; ++Class2) {
                 for (int state1 = 0; state1 < size; ++state1) {
                     if (!ofa.hasTransition(state1, i)) continue;
                     auto succs = ofa.succs(state1, i);
-
+//                            std::cout<<"\n\n Loop beguins: \n";
                     for (int state2:succs) {
-
+//                            std::cout<<"Successor: "<<state2<<"\n";
                         std::vector<CMSat::Lit> clause;
                         clause.reserve(3);
-                        clause.emplace_back(classClassVar(Class1, Class2, i), true);
-                        clause.emplace_back(stateClassVar(state1, Class1), true);
-                        clause.emplace_back(stateClassVar(state2, Class2), false);
-
+                        clause.emplace_back(class_class_vars[CCiToID(Class1, Class2, i)], true);
+                        clause.emplace_back(state_class_vars[stateClassToID(state1, Class1)], true);
+                        clause.emplace_back(state_class_vars[stateClassToID(state2, Class2)], false);
+//                            std::cout<<clause<<"\n";
                         solver->add_clause(clause);
                     }
                 }

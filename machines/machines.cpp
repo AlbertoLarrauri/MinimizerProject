@@ -2,14 +2,14 @@
 // Created by llarrauriborroto on 13/01/2021.
 //
 
-#include "fsms.h"
+#include "machines.h"
 
 #include<random>
 #include<vector>
 #include<optional>
 
 
-namespace machines{
+namespace SBCMin{
 
     void DFSM::print() {
         std::cout<<"State / Input --> Output / State \n";
@@ -21,7 +21,7 @@ namespace machines{
         }
     }
 
-    void OFSM::print() {
+    void OFA::print() {
         std::cout<<"State / Input --> Output / States \n";
         std::cout<<"---------------------------------\n";
         for(int state = 0; state < size ; ++state) {

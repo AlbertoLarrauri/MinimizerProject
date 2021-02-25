@@ -2,8 +2,8 @@
 // Created by llarrauriborroto on 13/01/2021.
 //
 
-#ifndef PMIN_FSMS_H
-#define PMIN_FSMS_H
+#ifndef PMIN_MACHINES_H
+#define PMIN_MACHINES_H
 
 #include<iostream>
 #include <vector>
@@ -13,14 +13,11 @@
 #include <memory>
 
 
-namespace machines
+namespace SBCMin
 {
 //static char wrong_size_1[1 + sizeof(std::size_t) - sizeof(std::vector<size_t>::size_type)];
 //
 //static char wrong_size_2[1 - sizeof(std::size_t) + sizeof(std::vector<size_t>::size_type)];
-
-
-
 
 
 
@@ -53,7 +50,7 @@ namespace machines
 
     };
 
-    class OFSM;
+    class OFA;
     class NTrans;
     class DTrans;
     class DFSM;
@@ -156,7 +153,7 @@ namespace machines
 
     };
 
-    class OFSM:  public virtual FSM{
+    class OFA: public virtual FSM{
 
     private:
 
@@ -182,14 +179,14 @@ namespace machines
 
     public:
 
-        OFSM(int in_size, int out_size): FSM(in_size,out_size){
+        OFA(int in_size, int out_size): FSM(in_size, out_size){
         }
 
-        OFSM(const OFSM& other)=default;
+        OFA(const OFA& other)=default;
 
-        OFSM& operator=(const OFSM& other)=default;
+        OFA& operator=(const OFA& other)=default;
 
-        OFSM(OFSM&& other):
+        OFA(OFA&& other):
                 FSM(other),
                 impl(std::move(other.impl)),
                 source_data(std::move(other.source_data))
@@ -197,7 +194,7 @@ namespace machines
             other.reset();
         }
 
-        OFSM& operator=(OFSM&& other){
+        OFA& operator=(OFA&& other){
             FSM::operator=(other);
             impl=std::move(other.impl);
             source_data=std::move(other.source_data);
@@ -278,4 +275,4 @@ namespace machines
 
 
 
-#endif //PMIN_FSMS_H
+#endif //PMIN_MACHINES_H

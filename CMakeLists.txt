@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 find_package(cryptominisat5 REQUIRED)
 
-add_executable(PMIN main.cpp fsms.cpp fsms.h driven_fsm_minimizer.cpp driven_fsm_minimizer.h machine_builders.cpp machine_builders.h compat_matrix.cpp compat_matrix.h)
+add_executable(PMIN main.cpp machines/machines.cpp machines/machines.h minimizers/driven_fsm_minimizer.cpp minimizers/driven_fsm_minimizer.h machines/builders.cpp machines/builders.h minimizers/compat_matrix.cpp minimizers/compat_matrix.h minimizers/ofa_minimizer.cpp minimizers/ofa_minimizer.h minimizers/cnf_builders.cpp minimizers/cnf_builders.h minimizers/hopcroft.h)
 
 target_include_directories(PMIN PRIVATE ${CRYPTOMINISAT5_INCLUDE_DIRS})
 

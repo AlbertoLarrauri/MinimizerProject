@@ -3,11 +3,11 @@
 //
 
 #include <unordered_set>
-#include "machine_builders.h"
+#include "builders.h"
 
 
-machines::OFSM machines::builders::buildOFSM(const DFSM& driver, const DFSM& driven){
-    OFSM obs_fsm(driven.numberOfInputs(),driven.numberOfOutputs());
+SBCMin::OFA SBCMin::builders::buildOFSM(const DFSM& driver, const DFSM& driven){
+    OFA obs_fsm(driven.numberOfInputs(), driven.numberOfOutputs());
     if (driver.getSize() == 0 || driver.getSize() == 0) {
         return obs_fsm;
     }

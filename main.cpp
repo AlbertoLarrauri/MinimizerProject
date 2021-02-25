@@ -4,8 +4,8 @@
 #include<memory>
 #include<chrono>
 #include<optional>
-#include "fsms.h"
-#include "driven_fsm_minimizer.h"
+#include "machines/machines.h"
+#include "machines/minimizers/driven_fsm_minimizer.h"
 
 #include "cryptominisat5/cryptominisat.h"
 
@@ -28,7 +28,7 @@ int main()
     B.print();
     minimizers::DrivenFSMMinimizer minimizer(A,B);
     minimizer.buildOFSM();
-//    const OFSM& O=minimizer.getOFSM();
+//    const OFA& O=minimizer.getOFSM();
 //  std::cout<<"\nObservation machine table: \n";
 //   O.print();
 

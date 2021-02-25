@@ -5,18 +5,14 @@
 #ifndef PMIN_DRIVEN_FSM_MINIMIZER_H
 #define PMIN_DRIVEN_FSM_MINIMIZER_H
 
+#include "hopcroft.h"
 #include <iostream>
 #include <memory>
 #include "cryptominisat5/cryptominisat.h"
-#include "machine_builders.h"
+#include "../machines/builders.h"
 #include "compat_matrix.h"
 
-
-using namespace machines;
-
-
-namespace minimizers {
-
+namespace SBCMin {
 
     class DrivenFSMMinimizer {
     private:
@@ -26,7 +22,7 @@ namespace minimizers {
         const DFSM &driver;
         const DFSM &driven;
 
-        std::unique_ptr<OFSM> ofsm;
+        std::unique_ptr<OFA> ofa;
 
         std::unique_ptr<DFSM> result;
 
@@ -37,14 +33,12 @@ namespace minimizers {
 
         //FLAGS
 
-        bool generate_clique=true;
+        bool generate_clique = true;
 
 
         bool solved = false;
         bool incremented = false;
         bool matrix_up_to_date;
-
-
 
 
         bool initial_covered = false;
@@ -54,11 +48,10 @@ namespace minimizers {
         std::vector<size_t> state_class_vars;
         std::vector<size_t> class_class_vars;
         std::vector<size_t> size_vars;
-        int
-                current_size;
+        int current_size;
 
         inline size_t stateClassToID(int state, int Class) {
-            return Class * ofsm->getSize() + state;
+            return Class * ofa->getSize() + state;
         }
 
         inline size_t elegant_pairing(int
@@ -71,7 +64,7 @@ namespace minimizers {
                               Class1, int
                               Class2, int
                               input) {
-            return (ofsm->numberOfInputs() * elegant_pairing(Class1, Class2)) + input;
+            return (ofa->numberOfInputs() * elegant_pairing(Class1, Class2)) + input;
         }
 
 
@@ -93,13 +86,7 @@ namespace minimizers {
         void generateIncrementalVars();
 
 
-
-
     public:
-
-         void check(){
-             compat_matrix->check();
-         }
 
 
 
@@ -111,8 +98,8 @@ namespace minimizers {
             assert(driver.numberOfOutputs() == driven.numberOfInputs());
         }
 
-        inline const OFSM &getOFSM() {
-            return *ofsm;
+        inline const OFA &getOFSM() {
+            return *ofa;
         }
 
         void buildOFSM();
@@ -135,9 +122,6 @@ namespace minimizers {
         void solve();
 
     };
-
-
 }
-
 
 #endif //PMIN_DRIVEN_FSM_MINIMIZER_H

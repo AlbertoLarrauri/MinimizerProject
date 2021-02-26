@@ -1,27 +1,23 @@
 //
-// Created by llarrauriborroto on 23/02/2021.
+// Created by lazhares on 25/02/2021.
 //
 
-#ifndef PMIN_CNF_BUILDERS_H
-#define PMIN_CNF_BUILDERS_H
+#ifndef PMIN_BASIC_NON_INCREMENTAL_H
+#define PMIN_BASIC_NON_INCREMENTAL_H
 
-#include "ofa_minimizer.h"
-#include "cryptominisat5/cryptominisat.h"
-#include "compat_matrix.h"
-
+#include "../ofa_minimizer.h"
 namespace SBCMin::OFACNFBuilders {
-
-
-    class BasicIncremental : public OFACNFBuilder {
+    class BasicNonIncremental: public OFACNFBuilder{
     private:
 
         std::unique_ptr<CMSat::SATSolver> solver;
         std::unique_ptr<DFSM> result;
 
-        int max_var;
-        int current_size;
+        int max_var=0;
+        int current_size=0;
         bool initial_covered = false;
         bool incremented = false;
+        int cover_size=0;
 
         const CompatMatrix &compat_matrix;
         const std::vector<int>& partial_solution;
@@ -29,7 +25,6 @@ namespace SBCMin::OFACNFBuilders {
 
         std::vector<size_t> state_class_vars;
         std::vector<size_t> class_class_vars;
-        std::vector<size_t> size_vars;
 
 
 
@@ -52,17 +47,20 @@ namespace SBCMin::OFACNFBuilders {
 
         void computeSolution() override;
 
+        void generateIncrementalVars();
+
         void buildFrameClauses();
 
         void buildCoverClauses();
 
-        void buildIncrementalClauses();
+        void buildCompatibilityClauses();
 
-        void generateIncrementalVars();
+        void buildSuccessorClauses();
+
 
     public:
 
-        BasicIncremental(OFA &_ofa, CompatMatrix &_compat_matrix);
+        BasicNonIncremental(OFA &_ofa, CompatMatrix &_compat_matrix);
 
         inline const DFSM &getResult() override{
             try {
@@ -74,9 +72,9 @@ namespace SBCMin::OFACNFBuilders {
         }
 
 
+
     };
 
+
 }
-
-
-#endif //PMIN_CNF_BUILDERS_H
+#endif //PMIN_BASIC_NON_INCREMENTAL_H

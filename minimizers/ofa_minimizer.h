@@ -22,6 +22,7 @@ namespace SBCMin {
     public:
         enum CNFBuilders {
             BASIC_INCREMENTAL,
+            BASIC_NON_INCREMENTAL,
         };
 
 

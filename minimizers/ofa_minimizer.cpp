@@ -3,8 +3,9 @@
 //
 
 #include "compat_matrix.h"
-#include "cnf_builders.h"
+#include "CNFBuilders/basic_incremental.h"
 #include "ofa_minimizer.h"
+#include "CNFBuilders/basic_non_incremental.h"
 
 using namespace SBCMin;
 
@@ -23,7 +24,8 @@ void OFAMinimizer::run() {
     switch (builder_type) {
         case BASIC_INCREMENTAL:
             cnf_builder_ptr=std::make_unique<OFACNFBuilders::BasicIncremental>(ofa, *compat_matrix_ptr);
-
+        case BASIC_NON_INCREMENTAL:
+            cnf_builder_ptr=std::make_unique<OFACNFBuilders::BasicNonIncremental>(ofa, *compat_matrix_ptr);
     }
 
     cnf_builder_ptr->run();

@@ -11,13 +11,14 @@
 
 #include "cryptominisat5/cryptominisat.h"
 #include "machines/builders.h"
+#include "machines/machines.h"
 
 
 int main() {
 
 
-    SBCMin::DFSM A(2, 2);
-    SBCMin::DFSM B(2, 2);
+    SBCMin::DFSM A(2, 3);
+    SBCMin::DFSM B(3, 2);
 
 
     makeRandomDFSM(8, A);
@@ -25,8 +26,15 @@ int main() {
 
     SBCMin::OFA ofa = SBCMin::buildOFA(A, B);
     SBCMin::OFAMinimizer minimizer(ofa);
+    minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
     minimizer.run();
     SBCMin::DFSM B2 = minimizer.getResult();
+
+    SBCMin::DFSM Comp1=SBCMin::buildCascadeDFSM(A,B);
+    SBCMin::DFSM Comp2=SBCMin::buildCascadeDFSM(A,B2);
+
+    std::cout<<(true==SBCMin::areEquivalent(Comp1,Comp2))<<"\n";
+    std::cout<< true<<"\n";
 
 
 

@@ -87,13 +87,13 @@ namespace SBCMin
 
     public:
 
-        DFSM(int in_size, int out_size): FSM(in_size,out_size){
+        inline  DFSM(int in_size, int out_size): FSM(in_size,out_size){
         }
 
         DFSM(const DFSM& other)=default;
         DFSM& operator=(const DFSM& other)=default;
 
-        DFSM(DFSM&& other) noexcept:
+        inline DFSM(DFSM&& other) noexcept:
         //Fist copies FSM parameters: size, input alphabet size, and output alphabet size
                 FSM(other),
                 impl(std::move(other.impl))
@@ -101,14 +101,14 @@ namespace SBCMin
             other.reset();
         }
 
-        DFSM& operator=(DFSM&& other){
+        inline DFSM& operator=(DFSM&& other){
             FSM::operator=(other);
             impl=std::move(other.impl);
             other.reset();
             return *this;
         }
 
-        void reset(int in_size=0, int out_size=0) override{
+        inline void reset(int in_size=0, int out_size=0) override{
             FSM::reset(in_size,out_size);
             impl.clear();
         }
@@ -176,14 +176,14 @@ namespace SBCMin
 
     public:
 
-        OFA(int in_size, int out_size): FSM(in_size, out_size){
+        inline OFA(int in_size, int out_size): FSM(in_size, out_size){
         }
 
         OFA(const OFA& other)=default;
 
         OFA& operator=(const OFA& other)=default;
 
-        OFA(OFA&& other):
+        inline OFA(OFA&& other):
                 FSM(other),
                 impl(std::move(other.impl)),
                 source_data(std::move(other.source_data))
@@ -191,7 +191,7 @@ namespace SBCMin
             other.reset();
         }
 
-        OFA& operator=(OFA&& other){
+        inline OFA& operator=(OFA&& other){
             FSM::operator=(other);
             impl=std::move(other.impl);
             source_data=std::move(other.source_data);
@@ -201,7 +201,7 @@ namespace SBCMin
 
 
 
-        void reset(int in_size=0, int out_size=0){
+        inline void reset(int in_size=0, int out_size=0){
             FSM::reset(in_size,out_size);
             impl.clear();
             source_data.clear();
@@ -221,12 +221,12 @@ namespace SBCMin
 
         }
 
-        void setTransition(int state, int in, int out){
+        inline void setTransition(int state, int in, int out){
             impl[SItoID(state, in)].emplace();
             impl[SItoID(state, in)]->out=out;
         }
 
-        void addSucc(int state, int in, int succ){
+        inline void addSucc(int state, int in, int succ){
             assert(impl[SItoID(state, in)]);
             impl[SItoID(state, in)]->successors.push_back(succ);
             source_data[succ][IOtoID(in,out(state,in))].emplace_back(state);
@@ -266,6 +266,7 @@ namespace SBCMin
 
 
 
+    bool areEquivalent(const DFSM& A, const DFSM& B);
 }
 
 

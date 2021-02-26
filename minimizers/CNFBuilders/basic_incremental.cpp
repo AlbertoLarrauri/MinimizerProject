@@ -2,8 +2,8 @@
 // Created by llarrauriborroto on 23/02/2021.
 //
 
-#include "cnf_builders.h"
-#include "compat_matrix.h"
+#include "basic_incremental.h"
+#include "../compat_matrix.h"
 
 using namespace SBCMin;
 using namespace OFACNFBuilders;
@@ -86,7 +86,7 @@ void BasicIncremental::init() {
 
         if (!state) initial_covered = true;
 
-        size_t var = state_class_vars[stateClassVar(state, Class)];
+        size_t var = stateClassVar(state, Class);
         clause.emplace_back(var, false);
         solver->add_clause(clause);
     }

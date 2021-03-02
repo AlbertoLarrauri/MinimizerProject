@@ -32,7 +32,7 @@ CompatMatrix::CompatMatrix(OFA &ofa, bool _is_clique_needed) :
             for (int i = 0; i < inputs; ++i) {
                 if (ofa.hasTransition(state1, i) &&
                     ofa.hasTransition(state2, i) &&
-                    (ofa.out(state1, i) != ofa.out(state2, i))) {
+                    (ofa.getOut(state1, i) != ofa.getOut(state2, i))) {
                     setIncompatible(state1, state2);
                     modified.emplace_back(state1, state2);
 
@@ -71,7 +71,7 @@ CompatMatrix::CompatMatrix(OFA &ofa, bool _is_clique_needed) :
 
 void CompatMatrix::computeLargeClique() {
 //    std::cout<<" Incompatibility scores: \n ";
-//    for(int i=0;i<incompat_scores.size();++i){
+//    for(int i=0;i<incompat_scores.dfsm_size();++i){
 //        std::cout<<i<<":"<<incompat_scores[i]<<"\n";
 //    }
 

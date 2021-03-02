@@ -30,8 +30,8 @@ void OFA::print() {
             if (!hasTransition(state, i)) {
                 std::cout << "*\n";
             } else {
-                const std::vector<int> &targets = succs(state, i);
-                std::cout << out(state, i) << " / [ " << targets[0];
+                const std::vector<int> &targets = getSuccs(state, i);
+                std::cout << getOut(state, i) << " / [ " << targets[0];
 
                 for (int j = 1; j < targets.size(); ++j) {
                     std::cout << ", " << targets[j];

@@ -92,7 +92,7 @@ namespace SBCMin
         DFSM& operator=(const DFSM& other)=default;
 
         inline DFSM(DFSM&& other) noexcept:
-        //Fist copies FSM parameters: size, input alphabet size, and output alphabet size
+        //Fist copies FSM parameters: dfsm_size, input alphabet dfsm_size, and output alphabet dfsm_size
                 FSM(other),
                 impl(std::move(other.impl))
         {
@@ -157,7 +157,7 @@ namespace SBCMin
         };
 
 
-        // Transition data. We keep track of sources and targets of each transition.
+        // Transition data. We keep track of getSources and targets of each transition.
 
         typedef std::vector<std::unordered_map<size_t, std::vector<int>>> SOURCE_IMPL;
         typedef std::vector<std::optional<NTrans>> IMPL;
@@ -218,7 +218,7 @@ namespace SBCMin
 
 
 
-        inline const int & out(int state, int in) const {
+        inline const int  getOut(int state, int in) const {
             assert(impl[SItoID(state, in)].has_value());
             return impl[SItoID(state, in)]->out;
 
@@ -232,11 +232,11 @@ namespace SBCMin
         inline void addSucc(int state, int in, int succ){
             assert(impl[SItoID(state, in)]);
             impl[SItoID(state, in)]->successors.push_back(succ);
-            source_data[succ][IOtoID(in,out(state,in))].emplace_back(state);
+            source_data[succ][IOtoID(in, getOut(state, in))].emplace_back(state);
         }
 
         inline const std::vector<int> &
-        succs(const int state, const int in) const {
+        getSuccs(const int state, const int in) const {
             assert(impl[SItoID(state, in)]);
             return (impl[SItoID(state, in)]->successors);
         }
@@ -254,7 +254,7 @@ namespace SBCMin
 
 
 
-        inline const std::vector<int>& sources(int state, int in, int out){
+        inline const std::vector<int>& getSources(int state, int in, int out){
             assert(hasSources(state, in, out));
             return source_data[state][IOtoID(in, out)];
         }

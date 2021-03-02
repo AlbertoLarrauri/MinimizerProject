@@ -7,46 +7,127 @@
 
 #include "../machines/machines.h"
 
+
 namespace SBCMin {
 
-    DFSM hopcroft(const DFSM& dfsm);
-    OFA hopcroft(const OFA& ofa);
 
-
-    class HopcroftPartition {
+    class DFSMHopcroft {
 
     private:
 
         typedef std::vector<std::vector<int>> Partition;
-        typedef std::vector<int> Set;
 
-        int active_sets = 0;
+        DFSM& dfsm;
 
-        int size;
+        int dfsm_size=0;
+
+        int number_of_sets = 0;
 
         std::vector<int> active_states;
 
+        std::vector<int> partition_dict;
 
-        std::vector<int> to_set;
+        std::vector<bool> is_set_tracked;
+        std::vector<int> tracked_sets;
 
-        std::vector<bool> target_flag;
-        std::vector<int> active_targets_stack;
+        std::vector<int> tracked_singletons;
 
-        std::vector<int> inactive_targets_stack;
 
-        void init(Partition partition);
+        inline int& toSetOrSingleton(int state){
+            assert(partition_dict.size()>state);
+            return partition_dict[state];
+        }
 
-        void refine(Partition partition);
+        inline bool isSetTracked(int set){
+            assert(is_set_tracked.size()>set);
+            return is_set_tracked[set];
+        }
 
-        void makeTarget(Set set);
+        inline bool finished(){
+            return (tracked_singletons.empty() && tracked_sets.empty()) || active_states.empty();
+        }
+
+
+        int popTarget();
+
+        void addSet(std::vector<int> set, bool tracking);
+
+        void refine(int target);
+
+        void clear();
+
+        DFSMHopcroft(DFSM &dfsm);
+
+        static DFSM extractDFSM(DFSMHopcroft& algorithm);
 
 
     public:
 
-        HopcroftPartition(DFSM &dfsm);
+        static DFSM minimize(DFSM& dfsm);
 
 
-    }
+
+
+    };
+
+
+
+    class OFAHopcroft {
+
+    private:
+
+        typedef std::vector<std::vector<int>> Partition;
+
+        OFA& ofa;
+
+        int ofa_size=0;
+
+        int number_of_sets = 0;
+
+        std::vector<int> active_states;
+
+        std::vector<int> partition_dict;
+
+        std::vector<bool> is_set_tracked;
+        std::vector<int> tracked_sets;
+
+        std::vector<int> tracked_singletons;
+
+
+        inline int& toSetOrSingleton(int state){
+            assert(partition_dict.size()>state);
+            return partition_dict[state];
+        }
+
+        inline bool isSetTracked(int set){
+            assert(is_set_tracked.size()>set);
+            return is_set_tracked[set];
+        }
+
+        inline bool finished(){
+            return (tracked_singletons.empty() && tracked_sets.empty()) || active_states.empty();
+        }
+
+
+        int popTarget();
+
+        void addSet(std::vector<int> set, bool tracking);
+
+        void refine(int target);
+
+        void clear();
+
+        OFAHopcroft(OFA &ofa);
+
+        static OFA extractOFA(OFAHopcroft& algorithm);
+
+
+    public:
+
+        static OFA minimize(OFA& OFA);
+
+
+    };
 
 
 

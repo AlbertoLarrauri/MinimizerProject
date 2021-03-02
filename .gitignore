@@ -30,7 +30,7 @@
 
 # Executables
 *.exe
-*.out
+*.getOut
 *.app
 
 

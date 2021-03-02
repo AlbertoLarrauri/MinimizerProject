@@ -58,7 +58,7 @@ OFA SBCMin::buildOFA(const DFSM& driver, const DFSM& driven){
                 obs_fsm.setTransition(state12, o, t);
             }
             if (!obs_fsm.hasSources(next12, o, t) ||
-                obs_fsm.sources(next12, o, t).back() != state12) {
+                    obs_fsm.getSources(next12, o, t).back() != state12) {
                 obs_fsm.addSucc(state12, o, next12);
             }
         }

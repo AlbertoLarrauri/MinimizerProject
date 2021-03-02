@@ -1,15 +1,18 @@
 #include <iostream>
 #include "machines/machines.h"
 #include "machines/builders.h"
+#include "minimizers/hopcroft.h"
 #include "minimizers/ofa_minimizer.h"
-
 
 
 int main() {
 
 
-    SBCMin::DFSM A(2, 16);
-    SBCMin::DFSM B(16, 2);
+    SBCMin::DFSM A(2, 4);
+    SBCMin::DFSM B(4, 2);
+
+
+
 
 //    A.addStates(5);
 //    A.setOut(0,0,0);
@@ -62,8 +65,35 @@ int main() {
 //    B.setSucc(1,1,2);
 //    B.setSucc(2,1,0);
 
-    makeRandomDFSM(10, A,6, true);
-    makeRandomDFSM(50, B);
+    makeRandomDFSM(10, A);
+
+    makeRandomDFSM(40, B);
+
+//    B.addStates(5);
+//    B.setTrans(0,0,0,3);
+//    B.setTrans(0,1,1,1);
+//    B.setTrans(1,0,0,3);
+//    B.setTrans(1,1,0,2);
+//    B.setTrans(2,0,0,4);
+//    B.setTrans(2,1,0,2);
+//    B.setTrans(3,0,0,1);
+//    B.setTrans(3,1,0,3);
+//    B.setTrans(4,0,0,0);
+//    B.setTrans(4,1,1,1);
+
+
+
+
+
+
+
+    SBCMin::DFSM B2 = SBCMin::DFSMHopcroft::minimize(B);
+
+    std::cout << "Is hopcroft result valid: " << (SBCMin::areEquivalent(B, B2) ? "True" : "False") << "\n";
+    std::cout << B2.getSize() << "\n";
+    std::cout << B.getSize() << "\n";
+
+
 
     SBCMin::OFA ofa= SBCMin::buildHeuristicOFA(A,B);
 //    std::cout<<"Driver table: \n";
@@ -72,43 +102,35 @@ int main() {
 //    std::cout<<"\n OFA table: \n";
 //    ofa.print();
 
-    std::cout<<"Heuristic minimization: \n";
+//    std::cout<<"Heuristic minimization: \n";
+//
+//    SBCMin::OFAMinimizer minimizer(ofa);
+//    minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
+//    minimizer.run();
+//    SBCMin::DFSM B3= minimizer.getResult();
+//
 
-    SBCMin::OFAMinimizer minimizer(ofa);
-    minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
-    minimizer.run();
-    SBCMin::DFSM B2 = minimizer.getResult();
+//    SBCMin::DFSM Comp2=SBCMin::buildCascadeDFSM(A,B3);
+//
 
-    SBCMin::DFSM Comp1=SBCMin::buildCascadeDFSM(A,B);
-    SBCMin::DFSM Comp2=SBCMin::buildCascadeDFSM(A,B2);
-
-    std::cout<<"Is result valid: "<<(SBCMin::areEquivalent(Comp1,Comp2)?"True":"False")<<"\n";
 
 
     std::cout<<"\n Exact minimization: \n";
 
     SBCMin::OFA exact_ofa= SBCMin::buildOFA(A,B);
-    SBCMin::OFAMinimizer exact_minimizer(exact_ofa);
+    SBCMin::OFA mini_ofa = SBCMin::OFAHopcroft::minimize(exact_ofa);
+
+    std::cout<<" OFA minimization: "<<exact_ofa.getSize()<<", "<<mini_ofa.getSize()<<"\n";
+
+    SBCMin::OFAMinimizer exact_minimizer(mini_ofa);
     exact_minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
     exact_minimizer.run();
-    SBCMin::DFSM exactB2 = minimizer.getResult();
+    SBCMin::DFSM exactB2 = exact_minimizer.getResult();
+    SBCMin::DFSM Comp1=SBCMin::buildCascadeDFSM(A,B);
     SBCMin::DFSM exactComp2=SBCMin::buildCascadeDFSM(A,B2);
-    std::cout<<"Is result valid: "<<(SBCMin::areEquivalent(Comp1,Comp2)?"True":"False")<<"\n";
 
-//    SBCMin::CompatMatrix matrix(exact_ofa);
-//    std::cout<<" Exact OFA: \n ";
-//    exact_ofa.print();
-//
-//
-//    std::cout<<" Incompatible pairs (exact method): \n ";
-//    for(auto pair:matrix.getPairs()){
-//        std::cout<<pair.first<<","<<pair.second<<"\n";
-//    }
-//
-//    std::cout<<" Clique (exact method): \n ";
-//    for(auto state:matrix.getClique()){
-//        std::cout<<state<<"\n";
-//    }
+    std::cout<<"Is result valid: "<<(SBCMin::areEquivalent(Comp1,exactComp2)?"True":"False")<<"\n";
+
 
 
 

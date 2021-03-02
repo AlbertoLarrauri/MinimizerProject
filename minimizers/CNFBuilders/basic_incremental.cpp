@@ -68,7 +68,7 @@ void BasicIncremental::init() {
         }
     }
 
-    /// Adding size assumption
+    /// Adding dfsm_size assumption
 
     size_vars.push_back(max_var);
     ++max_var;
@@ -124,7 +124,7 @@ void BasicIncremental::init() {
             for (int Class2 = 0; Class2 < current_size; ++Class2) {
                 for (int state1 = 0; state1 < size; ++state1) {
                     if (!ofa.hasTransition(state1, i)) continue;
-                    auto succs = ofa.succs(state1, i);
+                    auto succs = ofa.getSuccs(state1, i);
 
                     for (int state2:succs) {
 
@@ -225,7 +225,7 @@ void BasicIncremental::buildIncrementalClauses() {
             for (int state1 = 0; state1 < size; ++state1) {
                 if (!ofa.hasTransition(state1, i)) continue;
 
-                auto succs = ofa.succs(state1, i);
+                auto succs = ofa.getSuccs(state1, i);
                 for (int state2:succs) {
                     std::vector<CMSat::Lit> clause1;
                     std::vector<CMSat::Lit> clause2;
@@ -262,10 +262,10 @@ bool BasicIncremental::trySolve() {
     std::cout << "\n Number of variables: " << max_var << ".\n";
     auto possible = solver->solve(&size_assumption);
     if (possible == CMSat::l_False) {
-        std::cout << "Not able to minimize with size: " << current_size << ".\n";
+        std::cout << "Not able to minimize with dfsm_size: " << current_size << ".\n";
         return false;
     } else if (possible == CMSat::l_True) {
-        std::cout << "Minimizing with size: " << current_size << ".\n";
+        std::cout << "Minimizing with dfsm_size: " << current_size << ".\n";
 
         return true;
 
@@ -312,7 +312,7 @@ void BasicIncremental::computeSolution() {
             for (int state = 0; state < size; ++state) {
                 if (model[stateClassVar(state, Class1)] == CMSat::l_True) {
                     if (ofa.hasTransition(state, i)) {
-                        result->setOut(classIDs[Class1], i, ofa.out(state, i));
+                        result->setOut(classIDs[Class1], i, ofa.getOut(state, i));
                         out_found = true;
                     }
                 }

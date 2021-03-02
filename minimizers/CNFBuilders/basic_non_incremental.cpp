@@ -169,10 +169,10 @@ bool BasicNonIncremental::trySolve() {
     std::cout << "\n Number of variables: " << max_var << ".\n";
     auto possible = solver->solve();
     if (possible == CMSat::l_False) {
-        std::cout << "Not able to minimize with size: " << current_size << ".\n";
+        std::cout << "Not able to minimize with dfsm_size: " << current_size << ".\n";
         return false;
     } else if (possible == CMSat::l_True) {
-        std::cout << "Minimizing with size: " << current_size << ".\n";
+        std::cout << "Minimizing with dfsm_size: " << current_size << ".\n";
 
         return true;
 
@@ -219,7 +219,7 @@ void BasicNonIncremental::computeSolution() {
             for (int state = 0; state < size; ++state) {
                 if (model[stateClassVar(state, Class1)] == CMSat::l_True) {
                     if (ofa.hasTransition(state, i)) {
-                        result->setOut(classIDs[Class1], i, ofa.out(state, i));
+                        result->setOut(classIDs[Class1], i, ofa.getOut(state, i));
                         out_found = true;
                     }
                 }
@@ -277,7 +277,7 @@ void BasicNonIncremental::buildSuccessorClauses() {
             for (int Class2 = 0; Class2 < current_size; ++Class2) {
                 for (int state1 = 0; state1 < ofa.getSize(); ++state1) {
                     if (!ofa.hasTransition(state1, i)) continue;
-                    auto succs = ofa.succs(state1, i);
+                    auto succs = ofa.getSuccs(state1, i);
 
                     for (int state2:succs) {
 

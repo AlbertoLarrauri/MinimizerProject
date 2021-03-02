@@ -8,14 +8,19 @@
 
 #include <memory>
 #include <unordered_set>
+#include <random>
 #include "machines.h"
 
 namespace SBCMin {
 
     OFA buildOFA(const DFSM &driver, const DFSM &driven);
 
+    OFA buildHeuristicOFA(const DFSM &driver, const DFSM &driven);
 
     DFSM buildCascadeDFSM(const DFSM &driver, const DFSM &driven);
+
+
+    void makeRandomDFSM(int size, DFSM &A, int padding=0, bool rand=false);
 }
 
 

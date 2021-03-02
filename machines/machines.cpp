@@ -4,9 +4,8 @@
 
 #include "machines.h"
 
-#include<random>
+
 #include<vector>
-#include<optional>
 #include <unordered_set>
 
 
@@ -43,20 +42,6 @@ void OFA::print() {
     }
 }
 
-void SBCMin::makeRandomDFSM(int size, DFSM &A) {
-    if (A.getSize()) std::cout << "The argument machine has already been built.\n";
-    A.addStates(size);
-    std::default_random_engine defEngine(time(nullptr));
-    std::uniform_int_distribution<int> output_generator(0, A.numberOfOutputs() - 1);
-    std::uniform_int_distribution<int> succ_generator(0, size - 1);
-    for (int state = 0; state < size; ++state) {
-        for (int i = 0; i < A.numberOfInputs(); ++i) {
-            A.setOut(state, i, output_generator(defEngine));
-            A.setSucc(state, i, succ_generator(defEngine));
-        }
-    }
-}
-
 
 bool SBCMin::areEquivalent(const DFSM &A, const DFSM &B) {
     if (&A == &B) return true;
@@ -72,7 +57,8 @@ bool SBCMin::areEquivalent(const DFSM &A, const DFSM &B) {
     };
 
     std::unordered_set<int> visited_states;
-    std::vector<int> unexplored(size1 * size2);
+    std::vector<int> unexplored;
+    unexplored.reserve(size1*size2);
     unexplored.push_back(0);
     visited_states.insert(0);
 

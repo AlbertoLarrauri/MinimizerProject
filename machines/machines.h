@@ -26,7 +26,7 @@ namespace SBCMin
 
     class FSM{
     protected:
-        int size;
+        int size=0;
         int in_alphabet_size;
         int out_alphabet_size;
 
@@ -59,8 +59,6 @@ namespace SBCMin
 
 
     DFSM& cascadeDFSM(const DFSM& A, const DFSM& B);
-    void makeRandomDFSM(int size, DFSM& A);
-
 
     class DFSM: public virtual FSM{
     private:
@@ -135,6 +133,11 @@ namespace SBCMin
 
         inline void setSucc(int state, int in, int next){
             impl.at(SItoID(state, in)).next=next;
+        }
+
+        inline void setTrans(int state, int in , int out, int next){
+            setOut(state,in, out);
+            setSucc(state,in ,next);
         }
 
 

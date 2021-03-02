@@ -70,6 +70,10 @@ CompatMatrix::CompatMatrix(OFA &ofa, bool _is_clique_needed) :
 
 
 void CompatMatrix::computeLargeClique() {
+//    std::cout<<" Incompatibility scores: \n ";
+//    for(int i=0;i<incompat_scores.size();++i){
+//        std::cout<<i<<":"<<incompat_scores[i]<<"\n";
+//    }
 
     if (pairs.empty()) {
         big_clique.push_back(0);
@@ -77,7 +81,7 @@ void CompatMatrix::computeLargeClique() {
     }
 
     auto comparator = [this](int state1, int state2) -> bool {
-        return (incompat_scores[state1] < incompat_scores[state2]);
+        return (incompat_scores[state1] > incompat_scores[state2]);
     };
 
 

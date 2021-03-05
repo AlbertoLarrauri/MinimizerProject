@@ -259,7 +259,7 @@ namespace SBCMin
             return source_data[state][IOtoID(in, out)];
         }
 
-        inline const std::unordered_map<size_t, std::vector<int>>& sourceData(int state){
+        inline const std::unordered_map<size_t, std::vector<int>> & sourceData(int state) const {
             return source_data[state];
         }
 

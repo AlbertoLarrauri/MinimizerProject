@@ -3,6 +3,9 @@
 #include "machines/builders.h"
 #include "minimizers/hopcroft.h"
 #include "minimizers/ofa_minimizer.h"
+#include "minimizers/OFAMinimizers/basic_incremental.h"
+#include "minimizers/OFAMinimizers/assumption_based.h"
+#include "minimizers/OFAMinimizers/w_symmetry_breaking.h"
 
 
 int main() {
@@ -65,9 +68,9 @@ int main() {
 //    B.setSucc(1,1,2);
 //    B.setSucc(2,1,0);
 
-    makeRandomDFSM(10, A);
+    makeRandomDFSM(20, A);
 
-    makeRandomDFSM(40, B);
+    makeRandomDFSM(50, B);
 
 //    B.addStates(5);
 //    B.setTrans(0,0,0,3);
@@ -86,46 +89,21 @@ int main() {
 
 
 
-
-    SBCMin::DFSM B2 = SBCMin::DFSMHopcroft::minimize(B);
-
-    std::cout << "Is hopcroft result valid: " << (SBCMin::areEquivalent(B, B2) ? "True" : "False") << "\n";
-    std::cout << B2.getSize() << "\n";
-    std::cout << B.getSize() << "\n";
+    SBCMin::OFA ofa= SBCMin::buildOFA(A,B);
+    ofa=SBCMin::OFAHopcroft::minimize(ofa);
 
 
+    SBCMin::OFAMinimizers::WSymmetryBreaking exact_minimizer;
 
-    SBCMin::OFA ofa= SBCMin::buildHeuristicOFA(A,B);
-//    std::cout<<"Driver table: \n";
-//    A.print();
-//
-//    std::cout<<"\n OFA table: \n";
+//    exact_minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
+    bool solved=exact_minimizer.run(ofa,B.getSize());
+    std::cout<<"Solved: "<<solved<<"\n";
+//    exact_minimizer.printVars();
 //    ofa.print();
 
-//    std::cout<<"Heuristic minimization: \n";
-//
-//    SBCMin::OFAMinimizer minimizer(ofa);
-//    minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
-//    minimizer.run();
-//    SBCMin::DFSM B3= minimizer.getResult();
-//
-
-//    SBCMin::DFSM Comp2=SBCMin::buildCascadeDFSM(A,B3);
-//
+    SBCMin::DFSM B2 = exact_minimizer.getResult();
 
 
-
-    std::cout<<"\n Exact minimization: \n";
-
-    SBCMin::OFA exact_ofa= SBCMin::buildOFA(A,B);
-    SBCMin::OFA mini_ofa = SBCMin::OFAHopcroft::minimize(exact_ofa);
-
-    std::cout<<" OFA minimization: "<<exact_ofa.getSize()<<", "<<mini_ofa.getSize()<<"\n";
-
-    SBCMin::OFAMinimizer exact_minimizer(mini_ofa);
-    exact_minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
-    exact_minimizer.run();
-    SBCMin::DFSM exactB2 = exact_minimizer.getResult();
     SBCMin::DFSM Comp1=SBCMin::buildCascadeDFSM(A,B);
     SBCMin::DFSM exactComp2=SBCMin::buildCascadeDFSM(A,B2);
 

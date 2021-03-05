@@ -13,74 +13,97 @@
 
 namespace SBCMin {
 
-    class OFACNFBuilder;
 
-    class CompatMatrix;
-
-    class OFAMinimizer {
-
-    public:
-        enum CNFBuilders {
+    namespace OFAMinimizers {
+        enum Minimizers {
             BASIC_INCREMENTAL,
             BASIC_NON_INCREMENTAL,
         };
+    }
 
 
+    class OFAMinimizer {
     private:
 
-        OFA &ofa;
-        const DFSM *result;
-        std::unique_ptr<CompatMatrix> compat_matrix_ptr;
-        std::unique_ptr<OFACNFBuilder> cnf_builder_ptr;
+        const OFA *ofa_ptr;
+        std::unique_ptr<const CompatMatrix> compat_matrix_ptr;
 
-        bool clique_needed = true;
-        CNFBuilders builder_type =BASIC_INCREMENTAL;
-
-
-    public:
-
-
-        inline OFAMinimizer(OFA &_ofa) : ofa(_ofa) {};
-
-        inline void withClique(bool flag) {
-            clique_needed = flag;
-        }
-
-        inline void setCNFBuilder(CNFBuilders type){
-            builder_type=type;
+        inline virtual void buildMatrix() {
+            compat_matrix_ptr = std::make_unique<CompatMatrix>(ofa());
         }
 
 
-        void run();
-
-        inline const DFSM &getResult(){
-            try {
-                if (result==nullptr) throw(0);
-                return *result;
-            } catch(int){
-                std::cout<<"Result not obtained yet. NULLPTR returned \n";
-            }
+        inline size_t stateSetToID(int state, int Class) {
+            return Class * ofa().getSize() + state;
         }
 
-    };
+        static inline size_t elegant_pairing(int x, int y) {
+            return (x >= y ? (x * x) + x + y : (y * y) + x);
+        }
+
+        inline size_t setSetInToID(int Class1, int Class2, int input) {
+            return (ofa().numberOfInputs() * elegant_pairing(Class1, Class2)) + input;
+        }
 
 
-    class OFACNFBuilder {
-    private:
-
-        virtual bool trySolve() = 0;
+        virtual bool trySolve() final;
 
         virtual void init() = 0;
 
-        virtual void step() = 0;
+        virtual bool step() = 0;
 
-        virtual void computeSolution() = 0;
+        virtual void computeSolution() final;
+
+
+    protected:
+
+
+
+        std::unique_ptr<CMSat::SATSolver> solver;
+        std::vector<CMSat::Lit> assumptions;
+
+
+        std::unique_ptr<DFSM> result_ptr;
+
+        std::vector<size_t> state_set_vars;
+
+        std::vector<size_t> set_set_vars;
+
+        int upper_bound = 0;
+        int lower_bound = 0;
+        int current_size = 0;
+
+        inline const OFA &ofa() {
+            return *ofa_ptr;
+        }
+
+        inline const CompatMatrix &compat_matrix() {
+            return *compat_matrix_ptr;
+        }
+
+
+        virtual inline void resize(int number_of_sets) {
+            state_set_vars.resize(ofa().getSize() * number_of_sets);
+            set_set_vars.resize(number_of_sets * number_of_sets * ofa().numberOfInputs());
+        }
+
+
+        inline size_t &stateSetVar(int state, int set) {
+            return state_set_vars[stateSetToID(state, set)];
+        }
+
+        inline size_t &setSetVar(int Class1, int Class2, int input) {
+            return set_set_vars[setSetInToID(Class1, Class2, input)];
+        }
+
 
     public:
 
-        virtual const DFSM &getResult() = 0;
+        inline const DFSM &getResult() {
+            return *result_ptr;
+        }
 
-        void run();
+        virtual bool run(const OFA &_ofa, int _upper_bound) final;
 
     };
 

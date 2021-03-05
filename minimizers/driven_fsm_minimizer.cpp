@@ -111,27 +111,27 @@
 //void DrivenFSMMinimizer::buildInitialCNF() {
 //    current_size = big_clique.dfsm_size();
 //    const int &dfsm_size = ofa->getSize();
-//    state_class_vars.resize(dfsm_size * current_size);
-//    class_class_vars.resize(current_size * current_size * ofa->numberOfInputs());
+//    state_set_vars.resize(dfsm_size * current_size);
+//    set_set_vars.resize(current_size * current_size * ofa->numberOfInputs());
 ////@ Creating state-class variables
 //
 //    for (int Class = 0; Class < current_size; ++Class) {
 //        for (int state = 0; state < dfsm_size; ++state) {
-//            state_class_vars[stateClassToID(state, Class)] = max_var;
-//            ++max_var;
+//            state_set_vars[stateSetToID(state, Class)] = number_of_vars;
+//            ++number_of_vars;
 //        }
 //
 //        for (int Class2 = 0; Class2 < current_size; ++Class2) {
 //            for (int i = 0; i < ofa->numberOfInputs(); ++i) {
-//                class_class_vars[CCiToID(Class, Class2, i)] = max_var;
-//                ++max_var;
+//                set_set_vars[setSetInToID(Class, Class2, i)] = number_of_vars;
+//                ++number_of_vars;
 //            }
 //        }
 //    }
-//    size_vars.push_back(max_var);
-//    ++max_var;
+//    size_vars.push_back(number_of_vars);
+//    ++number_of_vars;
 //
-//    solver.new_vars(max_var);
+//    solver.new_vars(number_of_vars);
 //
 //    for (int Class = 0; Class < current_size; ++Class) {
 //        std::vector<CMSat::Lit> clause;
@@ -139,7 +139,7 @@
 //
 //        if (!state) initial_covered = true;
 //
-//        size_t var = state_class_vars[stateClassToID(state, Class)];
+//        size_t var = state_set_vars[stateSetToID(state, Class)];
 //        clause.emplace_back(var, false);
 ////            std::cout<<clause<<"\n";
 //        solver.add_clause(clause);;
@@ -163,8 +163,8 @@
 //            assert(state1 != state2);
 //            std::vector<CMSat::Lit> clause;
 //            clause.reserve(2);
-//            clause.emplace_back(state_class_vars[stateClassToID(state1, Class)], true);
-//            clause.emplace_back(state_class_vars[stateClassToID(state2, Class)], true);
+//            clause.emplace_back(state_set_vars[stateSetToID(state1, Class)], true);
+//            clause.emplace_back(state_set_vars[stateSetToID(state2, Class)], true);
 ////                std::cout<<clause<<"\n";
 //            solver.add_clause(clause);
 //        }
@@ -182,9 +182,9 @@
 ////                            std::cout<<"Successor: "<<state2<<"\n";
 //                        std::vector<CMSat::Lit> clause;
 //                        clause.reserve(3);
-//                        clause.emplace_back(class_class_vars[CCiToID(Class1, Class2, i)], true);
-//                        clause.emplace_back(state_class_vars[stateClassToID(state1, Class1)], true);
-//                        clause.emplace_back(state_class_vars[stateClassToID(state2, Class2)], false);
+//                        clause.emplace_back(set_set_vars[setSetInToID(Class1, Class2, i)], true);
+//                        clause.emplace_back(state_set_vars[stateSetToID(state1, Class1)], true);
+//                        clause.emplace_back(state_set_vars[stateSetToID(state2, Class2)], false);
 ////                            std::cout<<clause<<"\n";
 //                        solver.add_clause(clause);
 //                    }
@@ -198,7 +198,7 @@
 //void DrivenFSMMinimizer::tryMinimize() {
 //    std::vector<CMSat::Lit> size_assumption;
 //    size_assumption.emplace_back(size_vars.back(), false);
-//    std::cout << "\n Number of variables: " << max_var << ".\n";
+//    std::cout << "\n Number of variables: " << number_of_vars << ".\n";
 //    auto possible = solver.solve(&size_assumption);
 //    if (possible == CMSat::l_False) {
 //        std::cout << "Not able to run with dfsm_size: " << current_size << ".\n";
@@ -214,15 +214,15 @@
 //    std::vector<CMSat::lbool> model = solver.get_model();
 //    const int &result_size = current_size;
 //    const int &dfsm_size = ofa->getSize();
-//    result = std::make_unique<DFSM>(driven.numberOfInputs(),
+//    result_ptr = std::make_unique<DFSM>(driven.numberOfInputs(),
 //                                    driven.numberOfOutputs());
-//    result->addStates(result_size);
+//    result_ptr->addStates(result_size);
 //
 //    std::vector<int> classIDs(result_size);
 //
 //    bool initial_found = false;
 //    for (int Class = 0; Class < result_size; ++Class) {
-//        if (!initial_found && model[state_class_vars[stateClassToID(0, Class)]] == CMSat::l_True) {
+//        if (!initial_found && model[state_set_vars[stateSetToID(0, Class)]] == CMSat::l_True) {
 //            initial_found = true;
 //            classIDs[Class] = 0;
 //        } else {
@@ -238,20 +238,20 @@
 //    for (int Class1 = 0; Class1 < result_size; ++Class1) {
 //        for (int i = 0; i < ofa->numberOfInputs(); ++i) {
 //            for (int Class2 = 0; Class2 < result_size; ++Class2) {
-//                if (model[class_class_vars[CCiToID(Class1, Class2, i)]] == CMSat::l_True) {
-//                    result->setSucc(classIDs[Class1], i, classIDs[Class2]);
+//                if (model[set_set_vars[setSetInToID(Class1, Class2, i)]] == CMSat::l_True) {
+//                    result_ptr->setSucc(classIDs[Class1], i, classIDs[Class2]);
 //                }
 //            }
 //            bool out_found = false;
 //            for (int state = 0; state < dfsm_size; ++state) {
-//                if (model[state_class_vars[stateClassToID(state, Class1)]] == CMSat::l_True) {
+//                if (model[state_set_vars[stateSetToID(state, Class1)]] == CMSat::l_True) {
 //                    if (ofa->hasTransition(state, i)) {
-//                        result->setOut(classIDs[Class1], i, ofa->getOut(state, i));
+//                        result_ptr->setOut(classIDs[Class1], i, ofa->getOut(state, i));
 //                        out_found = true;
 //                    }
 //                }
 //            }
-//            if (!out_found) result->setOut(classIDs[Class1], i, 0);
+//            if (!out_found) result_ptr->setOut(classIDs[Class1], i, 0);
 //        }
 //    }
 //
@@ -261,7 +261,7 @@
 //
 //void DrivenFSMMinimizer::printResult() {
 //    std::cout << "Minimized machine table: \n";
-//    result->print();
+//    result_ptr->print();
 //}
 //
 //
@@ -274,8 +274,8 @@
 //            for (int Class2 = 0; Class2 < current_size; ++Class2) {
 ////                    std::cout<<"\n\n\n";
 ////                    std::cout<<"States: "<<Class1<<", "<<Class2<<"\n";
-////                    std::cout<<"ID: "<<elegant_pairing(Class1,Class2)<<", "<<CCiToID(Class1, Class2, i)<<","<<class_class_vars[CCiToID(Class1, Class2, i)]<< "\n";
-//                clause.emplace_back(class_class_vars[CCiToID(Class1, Class2, i)], false);
+////                    std::cout<<"ID: "<<elegant_pairing(Class1,Class2)<<", "<<CCiToID(Class1, Class2, i)<<","<<set_set_vars[setSetInToID(Class1, Class2, i)]<< "\n";
+//                clause.emplace_back(set_set_vars[setSetInToID(Class1, Class2, i)], false);
 //            }
 //            clause.emplace_back(size_vars.back(), true);
 ////                std::cout<<clause<<"\n";
@@ -289,7 +289,7 @@
 //    std::vector<CMSat::Lit> clause;
 //    clause.reserve(current_size + 1);
 //    for (int Class = 0; Class < current_size; ++Class) {
-//        size_t var = state_class_vars[stateClassToID(0, Class)];
+//        size_t var = state_set_vars[stateSetToID(0, Class)];
 //        clause.emplace_back(var, false);
 //    }
 //    if (!incremented) {
@@ -311,8 +311,8 @@
 //        assert(compat_matrix->areIncompatible(state1, state2));
 //        std::vector<CMSat::Lit> clause;
 //        clause.reserve(2);
-//        clause.emplace_back(state_class_vars[stateClassToID(state1, current_size - 1)], true);
-//        clause.emplace_back(state_class_vars[stateClassToID(state2, current_size - 1)], true);
+//        clause.emplace_back(state_set_vars[stateSetToID(state1, current_size - 1)], true);
+//        clause.emplace_back(state_set_vars[stateSetToID(state2, current_size - 1)], true);
 ////            std::cout<<clause<<"\n";
 //        solver.add_clause(clause);
 //    }
@@ -329,14 +329,14 @@
 //                    std::vector<CMSat::Lit> clause2;
 //                    clause1.reserve(3);
 //                    clause2.reserve(3);
-//                    clause1.emplace_back(class_class_vars[CCiToID(Class, current_size - 1, i)], true);
-//                    clause1.emplace_back(state_class_vars[stateClassToID(state1, Class)], true);
-//                    clause1.emplace_back(state_class_vars[stateClassToID(state2, current_size - 1)], false);
+//                    clause1.emplace_back(set_set_vars[setSetInToID(Class, current_size - 1, i)], true);
+//                    clause1.emplace_back(state_set_vars[stateSetToID(state1, Class)], true);
+//                    clause1.emplace_back(state_set_vars[stateSetToID(state2, current_size - 1)], false);
 ////                       std::cout<<clause1<<"\n";
 //                    solver.add_clause(clause1);
-//                    clause2.emplace_back(class_class_vars[CCiToID(current_size - 1, Class, i)], true);
-//                    clause2.emplace_back(state_class_vars[stateClassToID(state1, current_size - 1)], true);
-//                    clause2.emplace_back(state_class_vars[stateClassToID(state2, Class)], false);
+//                    clause2.emplace_back(set_set_vars[setSetInToID(current_size - 1, Class, i)], true);
+//                    clause2.emplace_back(state_set_vars[stateSetToID(state1, current_size - 1)], true);
+//                    clause2.emplace_back(state_set_vars[stateSetToID(state2, Class)], false);
 ////                      std::cout<<clause2<<"\n";
 //                    solver.add_clause(clause2);
 //                }
@@ -347,32 +347,32 @@
 //
 //
 //void DrivenFSMMinimizer::generateIncrementalVars() {
-//    size_t initial_vars = max_var;
+//    size_t initial_vars = number_of_vars;
 //    const int &dfsm_size = ofa->getSize();
-//    state_class_vars.resize(dfsm_size * current_size);
-//    class_class_vars.resize(current_size * current_size * ofa->numberOfInputs());
+//    state_set_vars.resize(dfsm_size * current_size);
+//    set_set_vars.resize(current_size * current_size * ofa->numberOfInputs());
 ////@ Creating state-class variables
 //
 //    for (int state = 0; state < dfsm_size; ++state) {
-//        state_class_vars[stateClassToID(state, current_size - 1)] = max_var;
-//        ++max_var;
+//        state_set_vars[stateSetToID(state, current_size - 1)] = number_of_vars;
+//        ++number_of_vars;
 //    }
 //    for (int i = 0; i < ofa->numberOfInputs(); ++i) {
 //
 //        for (int Class2 = 0; Class2 < current_size - 1; ++Class2) {
 //
-//            class_class_vars[CCiToID(current_size - 1, Class2, i)] = max_var;
-//            ++max_var;
-//            class_class_vars[CCiToID(Class2, current_size - 1, i)] = max_var;
-//            ++max_var;
+//            set_set_vars[setSetInToID(current_size - 1, Class2, i)] = number_of_vars;
+//            ++number_of_vars;
+//            set_set_vars[setSetInToID(Class2, current_size - 1, i)] = number_of_vars;
+//            ++number_of_vars;
 //        }
-//        class_class_vars[CCiToID(current_size - 1, current_size - 1, i)] = max_var;
-//        ++max_var;
+//        set_set_vars[setSetInToID(current_size - 1, current_size - 1, i)] = number_of_vars;
+//        ++number_of_vars;
 //    }
 //
-//    size_vars.push_back(max_var);
-//    ++max_var;
-//    solver.new_vars(max_var - initial_vars);
+//    size_vars.push_back(number_of_vars);
+//    ++number_of_vars;
+//    solver.new_vars(number_of_vars - initial_vars);
 //}
 //
 //

@@ -5,7 +5,7 @@
 #ifndef PMIN_COMPAT_MATRIX_H
 #define PMIN_COMPAT_MATRIX_H
 
-#include "ofa_minimizer.h"
+#include "../machines/machines.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
@@ -29,9 +29,12 @@ namespace SBCMin {
 
     public:
 
-        CompatMatrix(OFA &ofa, bool _is_clique_needed = true);
+        CompatMatrix(const OFA &ofa, bool _is_clique_needed = true);
 
-        bool areIncompatible(int state1, int state2) const;
+        bool inline areIncompatible(int state1, int state2) const {
+            return impl[toID(state1, state2)];
+        }
+
 
         void setIncompatible(int state1, int state2);
 

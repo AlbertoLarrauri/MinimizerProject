@@ -70,7 +70,7 @@ OFA SBCMin::buildOFA(const DFSM& driver, const DFSM& driven){
 
 DFSM SBCMin::buildCascadeDFSM(const DFSM &driver, const DFSM &driven) {
     DFSM result(driver.numberOfInputs(),driven.numberOfOutputs());
-    if (driver.getSize() == 0 || driver.getSize() == 0) {
+    if (driver.getSize() == 0 || driven.getSize() == 0) {
         return result;
     }
 

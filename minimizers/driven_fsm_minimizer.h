@@ -24,7 +24,7 @@
 //
 //        std::unique_ptr<OFA> ofa;
 //
-//        std::unique_ptr<DFSM> result;
+//        std::unique_ptr<DFSM> result_ptr;
 //
 //        std::unique_ptr<CompatMatrix> compat_matrix;
 //        std::vector<int> big_clique;
@@ -43,14 +43,14 @@
 //
 //        bool initial_covered = false;
 //
-//        size_t max_var = 0;
+//        size_t number_of_vars = 0;
 //
-//        std::vector<size_t> state_class_vars;
-//        std::vector<size_t> class_class_vars;
+//        std::vector<size_t> state_set_vars;
+//        std::vector<size_t> set_set_vars;
 //        std::vector<size_t> size_vars;
 //        int current_size;
 //
-//        inline size_t stateClassToID(int state, int Class) {
+//        inline size_t stateSetToID(int state, int Class) {
 //            return Class * ofa->getSize() + state;
 //        }
 //
@@ -60,7 +60,7 @@
 //            return (x >= y ? (x * x) + x + y : (y * y) + x);
 //        }
 //
-//        inline size_t CCiToID(int
+//        inline size_t setSetInToID(int
 //                              Class1, int
 //                              Class2, int
 //                              input) {
@@ -93,7 +93,7 @@
 //        DrivenFSMMinimizer(const DFSM &_driver, const DFSM &_driven) :
 //                driver(_driver),
 //                driven(_driven),
-//                result() {
+//                result_ptr() {
 //
 //            assert(driver.numberOfOutputs() == driven.numberOfInputs());
 //        }

@@ -15,7 +15,7 @@ inline size_t CompatMatrix::toID(int state1, int state2) const {
 }
 
 
-CompatMatrix::CompatMatrix(OFA &ofa, bool _is_clique_needed) :
+CompatMatrix::CompatMatrix(const OFA &ofa, bool _is_clique_needed) :
         size(ofa.getSize()),
         impl((size * (size + 1)) / 2),
         is_clique_needed(_is_clique_needed) {
@@ -123,8 +123,5 @@ void CompatMatrix::setIncompatible(int state1, int state2) {
 }
 
 
-bool inline CompatMatrix::areIncompatible(int state1, int state2) const {
-    return impl[toID(state1, state2)];
-}
 
 

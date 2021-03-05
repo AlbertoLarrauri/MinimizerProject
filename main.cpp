@@ -3,18 +3,19 @@
 #include "machines/builders.h"
 #include "minimizers/hopcroft.h"
 #include "minimizers/ofa_minimizer.h"
-#include "minimizers/OFAMinimizers/basic_incremental.h"
 #include "minimizers/OFAMinimizers/assumption_based.h"
-#include "minimizers/OFAMinimizers/w_symmetry_breaking.h"
-
+#include "machines/serializer.h"
 
 int main() {
 
+    SBCMin::deserializeDFSM("./benchmarks/ben2.txt");
 
-    SBCMin::DFSM A(2, 4);
-    SBCMin::DFSM B(4, 2);
+//    SBCMin::DFSM A=SBCMin::makeRandomDFSM(2,2,10);
+//    SBCMin::serializeDFSM(A,2);
 
 
+
+//    std::cout<<std::filesystem::current_path();
 
 
 //    A.addStates(5);
@@ -68,9 +69,7 @@ int main() {
 //    B.setSucc(1,1,2);
 //    B.setSucc(2,1,0);
 
-    makeRandomDFSM(20, A);
 
-    makeRandomDFSM(50, B);
 
 //    B.addStates(5);
 //    B.setTrans(0,0,0,3);
@@ -85,29 +84,62 @@ int main() {
 //    B.setTrans(4,1,1,1);
 
 
+//    SBCMin::DFSM A=SBCMin::makeRandomDFSM(2,4, 20);
+//
+//    SBCMin::DFSM B= SBCMin::makeRandomDFSM(4,2,30);
+//
+//
+//
+//
+//    SBCMin::DFSM B2 = SBCMin::DFSMHopcroft::minimize(B);
+//
+//    assert(SBCMin::areEquivalent(B, B2));
+
+//    std::cout << B2.getSize() << "\n";
+//    std::cout << B.getSize() << "\n";
 
 
-
-
-    SBCMin::OFA ofa= SBCMin::buildOFA(A,B);
-    ofa=SBCMin::OFAHopcroft::minimize(ofa);
-
-
-    SBCMin::OFAMinimizers::WSymmetryBreaking exact_minimizer;
-
-//    exact_minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
-    bool solved=exact_minimizer.run(ofa,B.getSize());
-    std::cout<<"Solved: "<<solved<<"\n";
-//    exact_minimizer.printVars();
+//
+//    SBCMin::OFA ofa= SBCMin::buildHeuristicOFA(A,B);
+//    std::cout<<"Driver table: \n";
+//    A.print();
+//
+//    std::cout<<"\n OFA table: \n";
 //    ofa.print();
 
-    SBCMin::DFSM B2 = exact_minimizer.getResult();
+//    std::cout<<"Heuristic minimization: \n";
+//
+//    SBCMin::OFAMinimizer minimizer(ofa);
+//    minimizer.setCNFBuilder(SBCMin::OFAMinimizer::BASIC_INCREMENTAL);
+//    minimizer.run();
+//    SBCMin::DFSM B3= minimizer.getResult();
+//
+
+//    SBCMin::DFSM Comp2=SBCMin::buildCascadeDFSM(A,B3);
+//
 
 
-    SBCMin::DFSM Comp1=SBCMin::buildCascadeDFSM(A,B);
-    SBCMin::DFSM exactComp2=SBCMin::buildCascadeDFSM(A,B2);
 
-    std::cout<<"Is result valid: "<<(SBCMin::areEquivalent(Comp1,exactComp2)?"True":"False")<<"\n";
+//    std::cout<<"\n Exact minimization: \n";
+//
+//    SBCMin::OFA exact_ofa= SBCMin::buildOFA(A,B);
+//    SBCMin::OFA mini_ofa = SBCMin::OFAHopcroft::minimize(exact_ofa);
+
+//    std::cout<<" OFA minimization: "<<exact_ofa.getSize()<<", "<<mini_ofa.getSize()<<"\n";
+
+//    SBCMin::OFAMinimizers::AssumptionBased exact_minimizer;
+//    exact_minimizer.run(mini_ofa, B.getSize());
+//
+
+
+
+
+
+    /// Sanity Checks
+//    SBCMin::DFSM exactB2 = exact_minimizer.getResult();
+//    SBCMin::DFSM Comp1=SBCMin::buildCascadeDFSM(A,B);
+//    SBCMin::DFSM exactComp2=SBCMin::buildCascadeDFSM(A,B2);
+//    assert(SBCMin::areEquivalent(Comp1,exactComp2));
 
 
 

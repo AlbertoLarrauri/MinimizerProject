@@ -203,8 +203,8 @@ OFA SBCMin::buildHeuristicOFA(const DFSM &driver, const DFSM &driven) {
     return result;
 }
 
-void SBCMin::makeRandomDFSM(int size, DFSM &A, int padding, bool rand) {
-    if (A.getSize()) std::cout << "The argument machine has already been built.\n";
+DFSM SBCMin::makeRandomDFSM(int in_size, int out_size, int size, int padding, bool rand) {
+    DFSM A(in_size, out_size);
     A.addStates(size);
     std::minstd_rand0 defEngine(time(nullptr));
     std::uniform_int_distribution<int> output_generator(0, A.numberOfOutputs() - padding-1);
@@ -217,6 +217,8 @@ void SBCMin::makeRandomDFSM(int size, DFSM &A, int padding, bool rand) {
             A.setTrans(state, i, o,succ_generator(defEngine));
         }
     }
+    return A;
 }
+
 
 

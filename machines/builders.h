@@ -19,8 +19,8 @@ namespace SBCMin {
 
     DFSM buildCascadeDFSM(const DFSM &driver, const DFSM &driven);
 
+    DFSM makeRandomDFSM(int in_size, int out_size, int size, int padding=0, bool rand=false);
 
-    void makeRandomDFSM(int size, DFSM &A, int padding=0, bool rand=false);
 }
 
 

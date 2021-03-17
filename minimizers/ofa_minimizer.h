@@ -9,7 +9,9 @@
 #include "../machines/machines.h"
 #include "cryptominisat5/cryptominisat.h"
 #include "compat_matrix.h"
-
+#include <string>
+#include <sstream>
+#include <chrono>
 
 namespace SBCMin {
 
@@ -30,6 +32,7 @@ namespace SBCMin {
 
         inline virtual void buildMatrix() {
             compat_matrix_ptr = std::make_unique<CompatMatrix>(ofa());
+
         }
 
 
@@ -96,6 +99,9 @@ namespace SBCMin {
             return set_set_vars[setSetInToID(Class1, Class2, input)];
         }
 
+    protected:
+
+
 
     public:
 
@@ -103,7 +109,7 @@ namespace SBCMin {
             return *result_ptr;
         }
 
-        virtual bool run(const OFA &_ofa, int _upper_bound) final;
+        virtual bool run(const OFA &_ofa, int _upper_bound);
 
     };
 

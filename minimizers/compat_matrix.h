@@ -14,7 +14,7 @@
 namespace SBCMin {
 
     class CompatMatrix {
-    private:
+    protected:
         int size;
         std::vector<bool> impl;
         std::vector<std::pair<int, int>> pairs;

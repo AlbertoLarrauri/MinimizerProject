@@ -83,14 +83,14 @@ void AssumptionBased::buildFrameClauses() {
                 }
                 solver->add_clause(clause);
             }
-            for (int set2 = 1; set2 < upper_bound; ++set2){
-                for(int set3=0; set3<set2; ++set3){
-                    std::vector<CMSat::Lit> clause;
-                    clause.reserve(2);
-                    clause.emplace_back(setSetVar(set, set2, in), true);
-                    clause.emplace_back(setSetVar(set, set3, in), true);
-                }
-            }
+//            for (int set2 = 1; set2 < upper_bound; ++set2){
+//                for(int set3=0; set3<set2; ++set3){
+//                    std::vector<CMSat::Lit> clause;
+//                    clause.reserve(2);
+//                    clause.emplace_back(setSetVar(set, set2, in), true);
+//                    clause.emplace_back(setSetVar(set, set3, in), true);
+//                }
+//            }
         }
     }
 }

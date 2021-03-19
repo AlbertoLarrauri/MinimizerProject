@@ -10,11 +10,10 @@
 using namespace SBCMin;
 using namespace OFAMinimizers;
 
-
-
 void BasicIncremental::init() {
-    solver=std::make_unique<CMSat::SATSolver>();
-    partial_solution=compat_matrix().getClique();
+
+    solver = std::make_unique<CMSat::SATSolver>();
+    partial_solution = compat_matrix().getClique();
     current_size = partial_solution.size();
     const int &size = ofa().getSize();
     resize(current_size);
@@ -74,7 +73,7 @@ void BasicIncremental::init() {
 
     for (int Class = 0; Class < current_size; ++Class) {
         for (auto pair:compat_matrix().
-        getPairs()) {
+                getPairs()) {
             int state1 = pair.first;
             int state2 = pair.second;
             std::vector<CMSat::Lit> clause;
@@ -110,7 +109,7 @@ void BasicIncremental::init() {
         }
     }
 
-    assumptions.emplace_back(size_vars.back(), false);
+
 
 }
 
@@ -179,7 +178,7 @@ void BasicIncremental::buildIncrementalClauses() {
     const int &size = ofa().getSize();
 //       std::cout<<"Incompatibility clauses: \n";
     for (auto pair:compat_matrix().
-    getPairs()) {
+            getPairs()) {
         int state1 = pair.first;
         int state2 = pair.second;
 //        assert(compat_matrix().areIncompatible(state1, state2));
@@ -219,16 +218,31 @@ void BasicIncremental::buildIncrementalClauses() {
 }
 
 bool BasicIncremental::step() {
-    if(current_size==upper_bound) return false;
+    if (current_size == upper_bound) return false;
     current_size++;
     incremented = true;
     generateIncrementalVars();
     buildFrameClauses();
     if (!initial_covered) buildCoverClauses();
     buildIncrementalClauses();
-    assumptions.resize(0);
-    assumptions.emplace_back(size_vars.back(), false);
     return true;
+}
+
+bool BasicIncremental::runImpl() {
+    init();
+    while (true) {
+        std::cout << "Trying to minimize with size: " << current_size << "\n";
+        if (trySolve({CMSat::Lit(size_vars.back(), false)})) {
+            std::cout << "Succeeded\n";
+            computeSolution();
+            return true;
+        }
+        if (!step()) {
+            std::cout << "Failed to minimize with the given bounds";
+            return false;
+        }
+    }
+
 }
 
 

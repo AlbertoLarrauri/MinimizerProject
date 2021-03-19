@@ -22,7 +22,7 @@ namespace SBCMin::OFAMinimizers {
 
         void init() override;
 
-        bool step() override;
+        bool step();
 
         void generateIncrementalVars();
 
@@ -33,6 +33,8 @@ namespace SBCMin::OFAMinimizers {
         void buildCompatibilityClauses();
 
         void buildSuccessorClauses();
+
+        bool runImpl() override;
 
 
     public:

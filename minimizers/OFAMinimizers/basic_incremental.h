@@ -24,10 +24,9 @@ namespace SBCMin::OFAMinimizers {
         std::vector<int> partial_solution;
 
 
-
         void init() override;
 
-        bool step() override;
+        bool step();
 
         void buildFrameClauses();
 
@@ -37,9 +36,12 @@ namespace SBCMin::OFAMinimizers {
 
         void generateIncrementalVars();
 
+        bool runImpl() override;
+
     public:
 
         BasicIncremental()=default;
+
 
 
 

@@ -36,11 +36,7 @@ void AssumptionBased::generateVars() {
 void AssumptionBased::init() {
     solver = std::make_unique<CMSat::SATSolver>();
     lower_bound = compat_matrix().getClique().size();
-    current_size = lower_bound;
     generateVars();
-
-    if (current_size < upper_bound) assumptions.emplace_back(sizeVar(current_size + 1), true);
-
     buildPartialSolutionClauses();
     if (!initial_in_partial_solution) buildCoveringClauses();
     buildFrameClauses();
@@ -159,13 +155,14 @@ void AssumptionBased::buildSizeClauses() {
     }
 }
 
-bool AssumptionBased::step() {
-    if (current_size == upper_bound) return false;
-    ++current_size;
-    assumptions.resize(0);
-    if (current_size < upper_bound) {
-        assumptions.emplace_back(sizeVar(current_size + 1), true);
+bool AssumptionBased::query(int size) {
+    current_size=size;
+    std::vector<CMSat::Lit> assumptions(0);
+
+    if(size<upper_bound){
+    assumptions.emplace_back(sizeVar(size+1),true);
     }
-    return true;
+    return trySolve(assumptions);
 }
+
 

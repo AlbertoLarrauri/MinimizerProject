@@ -193,3 +193,21 @@ void BasicNonIncremental::buildSuccessorClauses() {
         }
     }
 }
+
+
+bool BasicNonIncremental::runImpl() {
+    init();
+    while (true) {
+        std::cout << "Trying to minimize with size: " << current_size << "\n";
+        if (trySolve()) {
+            std::cout << "Succeeded\n";
+            computeSolution();
+            return true;
+        }
+        if (!step()) {
+            std::cout << "Failed to minimize with the given bounds";
+            return false;
+        }
+    }
+
+}

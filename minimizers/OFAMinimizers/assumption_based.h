@@ -11,7 +11,7 @@
 #include "../compat_matrix.h"
 
 namespace SBCMin::OFAMinimizers {
-    class AssumptionBased: public OFAMinimizer{
+    class AssumptionBased: public OFAMinimizerWCustomStrategy{
 
 
     protected:
@@ -30,7 +30,7 @@ namespace SBCMin::OFAMinimizers {
 
         void init() override;
 
-        bool step() override;
+//        bool step() override;
 
         inline void resize(int size){
             size_vars.resize(size-lower_bound+1);
@@ -50,6 +50,8 @@ namespace SBCMin::OFAMinimizers {
         void buildIncompatibilityClauses();
 
         void buildSuccessorClauses();
+
+        bool query(int size) override;
 
 
     public:

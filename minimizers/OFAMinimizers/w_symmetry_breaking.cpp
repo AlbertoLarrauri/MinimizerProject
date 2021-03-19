@@ -13,7 +13,7 @@ void WSymmetryBreaking::init() {
     current_size = lower_bound;
     generateVars();
 
-    if (current_size < upper_bound) assumptions.emplace_back(sizeVar(current_size + 1), true);
+//    if (current_size < upper_bound) assumptions.emplace_back(sizeVar(current_size + 1), true);
 
     buildPartialSolutionClauses();
     if (!initial_in_partial_solution) buildCoveringClauses();
@@ -27,40 +27,30 @@ void WSymmetryBreaking::init() {
 
 
 void WSymmetryBreaking::generateVars() {
-    resize(upper_bound);
-
-    for (int set = 0; set < upper_bound; ++set) {
-        for (int state = 0; state < ofa().getSize(); ++state) {
-            stateSetVar(state, set) = number_of_vars++;
-        }
-
-        for (int set2 = 0; set2 < upper_bound; ++set2) {
-            for (int in = 0; in < ofa().numberOfInputs(); ++in) {
-                setSetVar(set, set2, in) = number_of_vars++;
-                if (set2 >= lower_bound) usedVar(set, set2, in) = number_of_vars++;
-            }
-        }
-    }
-
-    for (int size = lower_bound; size <= upper_bound; ++size) {
-        sizeVar(size) = number_of_vars++;
-    }
-
-
-    solver->new_vars(number_of_vars);
-
-    return;
+//    resize(upper_bound);
+//
+//    for (int set = 0; set < upper_bound; ++set) {
+//        for (int state = 0; state < ofa().getSize(); ++state) {
+//            stateSetVar(state, set) = number_of_vars++;
+//        }
+//
+//        for (int set2 = 0; set2 < upper_bound; ++set2) {
+//            for (int in = 0; in < ofa().numberOfInputs(); ++in) {
+//                setSetVar(set, set2, in) = number_of_vars++;
+//                if (set2 >= lower_bound) usedVar(set, set2) = number_of_vars++;
+//            }
+//        }
+//    }
+//
+//    for (int size = lower_bound; size <= upper_bound; ++size) {
+//        sizeVar(size) = number_of_vars++;
+//    }
+//
+//
+//    solver->new_vars(number_of_vars);
 
 }
 
-
-//void WSymmetryBreaking::buildCoveringClauses() {
-//    std::vector<CMSat::Lit> clause;
-//    clause.reserve(1);
-//    clause.emplace_back(stateSetVar(0, 0), false);
-//    solver->add_clause(clause);
-//
-//}
 
 
 void WSymmetryBreaking::buildSymmetryBreakingClauses() {

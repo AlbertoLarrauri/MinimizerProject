@@ -12,6 +12,8 @@
 #include <string>
 #include <sstream>
 #include <chrono>
+#include <utility>
+#include "monotone_range_searchers.h"
 
 namespace SBCMin {
 
@@ -36,35 +38,21 @@ namespace SBCMin {
         }
 
 
-        inline size_t stateSetToID(int state, int Class) {
-            return Class * ofa().getSize() + state;
-        }
-
         static inline size_t elegant_pairing(int x, int y) {
             return (x >= y ? (x * x) + x + y : (y * y) + x);
         }
 
-        inline size_t setSetInToID(int Class1, int Class2, int input) {
-            return (ofa().numberOfInputs() * elegant_pairing(Class1, Class2)) + input;
-        }
 
 
-        virtual bool trySolve() final;
+        virtual void init()=0;
 
-        virtual void init() = 0;
-
-        virtual bool step() = 0;
-
-        virtual void computeSolution() final;
+        virtual bool runImpl() = 0;
 
 
     protected:
 
 
-
         std::unique_ptr<CMSat::SATSolver> solver;
-        std::vector<CMSat::Lit> assumptions;
-
 
         std::unique_ptr<DFSM> result_ptr;
 
@@ -75,6 +63,16 @@ namespace SBCMin {
         int upper_bound = 0;
         int lower_bound = 0;
         int current_size = 0;
+
+
+        inline size_t stateSetToID(int state, int Class) {
+            return Class * ofa().getSize() + state;
+        }
+
+
+        inline size_t setSetInToID(int Class1, int Class2, int input) {
+            return (ofa().numberOfInputs() * elegant_pairing(Class1, Class2)) + input;
+        }
 
         inline const OFA &ofa() {
             return *ofa_ptr;
@@ -99,7 +97,9 @@ namespace SBCMin {
             return set_set_vars[setSetInToID(Class1, Class2, input)];
         }
 
-    protected:
+        virtual bool trySolve(const std::vector<CMSat::Lit> &assumptions={}) final;
+
+        virtual void computeSolution() final;
 
 
 
@@ -109,7 +109,41 @@ namespace SBCMin {
             return *result_ptr;
         }
 
-        virtual bool run(const OFA &_ofa, int _upper_bound);
+        virtual bool run(const OFA &_ofa, int _upper_bound) final {
+            ofa_ptr = &_ofa;
+            buildMatrix();
+            upper_bound = _upper_bound;
+            lower_bound = compat_matrix().getClique().size();
+            init();
+            return runImpl();
+        }
+
+    };
+
+
+    class OFAMinimizerWCustomStrategy: public OFAMinimizer{
+    private:
+
+        typedef
+        std::function<std::optional<int>(int lower, int upper, std::function<bool(int)> query)> Strategy;
+
+       Strategy strat=BasicIncrementMRS();
+
+
+        bool runImpl() final;
+
+
+    protected:
+        virtual bool query(int size)=0;
+
+
+    public:
+
+        void setStrategy(Strategy _strat){
+            strat=std::move(_strat);
+        }
+
+
 
     };
 

@@ -12,12 +12,13 @@ namespace SBCMin {
     class MRS {
     public:
 
-        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> &query) = 0;
+        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> query) = 0;
     };
 
 
     class BasicIncrementMRS : public MRS {
-        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> &query) {
+    public:
+        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> query) {
 
             if (upper < lower) return std::nullopt;
 
@@ -39,8 +40,9 @@ namespace SBCMin {
 
 
     class BasicDecrementMRS : public MRS {
+    public:
 
-        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> &query) {
+        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> query) {
             if (upper < lower) return std::nullopt;
 
             std::optional<int> result = std::nullopt;
@@ -59,8 +61,8 @@ namespace SBCMin {
     };
 
     class BasicBinaryMRS : public MRS {
-
-        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> &query) {
+    public:
+        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> query) {
             if (upper < lower) return std::nullopt;
 
             std::optional<int> result = std::nullopt;
@@ -76,7 +78,7 @@ namespace SBCMin {
 
 
             while (current_lower!=current_upper){
-                int current=(upper+lower)/2;
+                int current=(current_upper+current_lower)/2;
                 if(query(current)){
                     current_upper=current;
                 } else{
@@ -87,6 +89,7 @@ namespace SBCMin {
         }
 
     };
+
 
 
 }

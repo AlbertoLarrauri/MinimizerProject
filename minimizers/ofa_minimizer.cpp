@@ -9,28 +9,6 @@
 using namespace SBCMin;
 
 
-bool OFAMinimizer::run(const OFA &_ofa, int _upper_bound) {
-
-    ofa_ptr = &_ofa;
-    buildMatrix();
-    upper_bound = _upper_bound;
-    lower_bound = compat_matrix().getClique().size();
-
-    init();
-    while (true) {
-        std::cout<<"Trying to minimize with size: "<<current_size<<"\n";
-        if (trySolve()) {
-            std::cout<<"Succeeded\n";
-            computeSolution();
-            return true;
-        }
-        if (!step()){
-            std::cout<<"Failed to minimize with the given bounds";
-            return false;
-        }
-    }
-}
-
 
 
 
@@ -80,10 +58,23 @@ void OFAMinimizer::computeSolution() {
     }
 }
 
-bool OFAMinimizer::trySolve() {
+bool OFAMinimizer::trySolve(const std::vector<CMSat::Lit> &assumptions) {
     CMSat::lbool solved = solver->solve(&assumptions);
     return (solved == CMSat::l_True);
 }
 
 
+bool OFAMinimizerWCustomStrategy::runImpl() {
+    auto Query=[&](int size){
+        std::cout<<" Trying to minimize with size "<<size<<" ...\n";
+        bool value=query(size);
+        std::cout<<(value?"Succeeded ":"Failed")<<"\n";
+        if(value) computeSolution();
+        return value;
+    };
+
+    auto solution_size=strat(lower_bound,upper_bound,Query);
+    return solution_size.has_value();
+
+}
 

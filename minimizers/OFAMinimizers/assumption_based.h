@@ -39,7 +39,7 @@ namespace SBCMin::OFAMinimizers {
 
         void buildSizeClauses();
 
-        virtual void generateVars();
+        void generateVars();
 
         void buildPartialSolutionClauses();
 

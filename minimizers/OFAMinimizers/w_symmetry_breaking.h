@@ -13,24 +13,19 @@ namespace SBCMin::OFAMinimizers {
     private:
 
 
+        inline size_t setSetInToID(int set1, int set2, int input) {
+            return ofa().numberOfInputs() *((upper_bound-lower_bound)*set1+ set2-lower_bound) + input;
+        }
+
+        inline size_t& usedVar (int set1, int set2, int input) {
+            return used_vars[setSetInToID(set1,set2,input)];
+        }
 
         std::vector<size_t> used_vars;
-        std::vector<size_t> participate_vars;
-
-        inline size_t& usedVar (int state, int set) {
-            return used_vars[stateSetVar(state,set)];
-        }
-
-        inline size_t& participateVar(int state, int set){
-            return participate_vars[stateSetVar(state,set)];
-        }
-
-
 
         inline void resize(int size){
             AssumptionBased::resize(size);
-            used_vars.resize(ofa().getSize()*size);
-            participate_vars.resize(ofa().getSize()*size);
+            used_vars.resize(size*(upper_bound-lower_bound)*ofa().numberOfInputs());
         }
 
         inline auto next(int set, int input){
@@ -55,8 +50,11 @@ namespace SBCMin::OFAMinimizers {
         }
 
         void init() override;
+        void buildCoveringClauses();
 
-        void generateVars() override;
+        void generateVars();
+
+        bool query(int size) override;
         void buildSymmetryBreakingClauses();
 
 

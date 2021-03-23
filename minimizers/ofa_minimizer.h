@@ -139,7 +139,7 @@ namespace SBCMin {
 
     public:
 
-        void setStrategy(Strategy _strat){
+        virtual void setStrategy(Strategy _strat) final {
             strat=std::move(_strat);
         }
 

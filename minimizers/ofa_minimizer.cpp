@@ -37,11 +37,13 @@ void OFAMinimizer::computeSolution() {
 
     }
 
+//    std::cout<<"Compatible cover: \n";
     for (int set1 = 0; set1 < result_size; ++set1) {
         for (int i = 0; i < ofa().numberOfInputs(); ++i) {
             for (int set2 = 0; set2 < result_size; ++set2) {
                 if (model[setSetVar(set1, set2, i)] == CMSat::l_True) {
                     result_ptr->setSucc(classIDs[set1], i, classIDs[set2]);
+//                    std::cout<<set1<<" / "<<i <<" -> "<<set2<<"\n";
                 }
             }
             bool out_found = false;

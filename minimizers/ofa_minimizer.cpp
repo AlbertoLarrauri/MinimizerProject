@@ -4,6 +4,7 @@
 
 
 #include "ofa_minimizer.h"
+#include <sys/resource.h>
 
 
 using namespace SBCMin;
@@ -16,7 +17,7 @@ void OFAMinimizer::computeSolution() {
     result_ptr = std::make_unique<DFSM>(ofa().numberOfInputs(), ofa().numberOfOutputs());
     std::vector<CMSat::lbool> model = solver->get_model();
     const int &result_size = current_size;
-    const int &size = ofa().getSize();
+    const int &size = ofa().size();
 
     result_ptr->addStates(result_size);
 
@@ -67,6 +68,8 @@ bool OFAMinimizer::trySolve(const std::vector<CMSat::Lit> &assumptions) {
 
 
 bool OFAMinimizerWCustomStrategy::runImpl() {
+    timespec rstart,rend;
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&rstart);
     auto Query=[&](int size){
         std::cout<<" Trying to minimize with size "<<size<<" ...\n";
         bool value=query(size);
@@ -74,9 +77,13 @@ bool OFAMinimizerWCustomStrategy::runImpl() {
         if(value) computeSolution();
         return value;
     };
-
     auto solution_size=strat(lower_bound,upper_bound,Query);
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&rend);
+    double tstart=double(rstart.tv_sec)
+                                   + double(rstart.tv_nsec) / 1000000000;
+    double tend=double(rend.tv_sec)
+                  + double(rend.tv_nsec) / 1000000000;
+    sat_time=tend-tstart;
     return solution_size.has_value();
-
 }
 

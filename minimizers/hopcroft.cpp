@@ -10,7 +10,7 @@ using namespace SBCMin;
 
 DFSMHopcroft::DFSMHopcroft(DFSM &_dfsm) :
         dfsm(_dfsm),
-        dfsm_size(dfsm.getSize()),
+        dfsm_size(dfsm.size()),
         partition_dict(dfsm_size) {
 
     active_states.reserve(dfsm_size);
@@ -143,10 +143,10 @@ DFSM DFSMHopcroft::extractDFSM(DFSMHopcroft &algorithm) {
     DFSM result(dfsm.numberOfInputs(), dfsm.numberOfOutputs());
 
     std::vector<int> state_to_old_state;
-    state_to_old_state.reserve(dfsm.getSize());
+    state_to_old_state.reserve(dfsm.size());
 
     std::unordered_map<int, int> set_to_state;
-    set_to_state.reserve(dfsm.getSize());
+    set_to_state.reserve(dfsm.size());
     std::vector<int> unexplored_old;
 
     int initial_set = algorithm.toSetOrSingleton(0);
@@ -169,7 +169,7 @@ DFSM DFSMHopcroft::extractDFSM(DFSMHopcroft &algorithm) {
             if (set_to_state.count(succ_set)) {
                 succ = set_to_state[succ_set];
             } else {
-                succ = result.getSize();
+                succ = result.size();
                 result.addStates();
                 set_to_state[succ_set] = succ;
                 unexplored_old.push_back(old_succ);
@@ -195,7 +195,7 @@ DFSM DFSMHopcroft::minimize(DFSM &dfsm) {
 
 OFAHopcroft::OFAHopcroft(OFA &_ofa) :
         ofa(_ofa),
-        ofa_size(ofa.getSize()),
+        ofa_size(ofa.size()),
         partition_dict(ofa_size) {
 
     active_states.reserve(ofa_size);
@@ -335,10 +335,10 @@ OFA OFAHopcroft::extractOFA(OFAHopcroft &algorithm) {
     OFA result(ofa.numberOfInputs(), ofa.numberOfOutputs());
 
     std::vector<int> state_to_old_state;
-    state_to_old_state.reserve(ofa.getSize());
+    state_to_old_state.reserve(ofa.size());
 
     std::unordered_map<int, int> set_to_state;
-    set_to_state.reserve(ofa.getSize());
+    set_to_state.reserve(ofa.size());
     std::vector<int> unexplored_old;
 
     int initial_set = algorithm.toSetOrSingleton(0);
@@ -365,7 +365,7 @@ OFA OFAHopcroft::extractOFA(OFAHopcroft &algorithm) {
                 if (set_to_state.count(succ_set)) {
                     succ = set_to_state[succ_set];
                 } else {
-                    succ = result.getSize();
+                    succ = result.size();
                     result.addStates();
                     set_to_state[succ_set] = succ;
                     unexplored_old.push_back(old_succ);

@@ -12,51 +12,61 @@ using namespace SBCMin;
 
 OFA SBCMin::buildOFA(const DFSM &driver, const DFSM &driven) {
     OFA obs_fsm(driven.numberOfInputs(), driven.numberOfOutputs());
-    if (driver.getSize() == 0 || driver.getSize() == 0) {
+    if (driver.size() == 0 || driver.size() == 0) {
         return obs_fsm;
     }
 
     int inputs = driver.numberOfInputs();
-    int size1 = driver.getSize();
-    int size2 = driven.getSize();
+    int size1 = driver.size();
+    int size2 = driven.size();
+
+    std::vector<int> state_map(size1*size2,0);
+    std::vector<bool> visited_pairs(size1*size2, false);
+
     auto ID = [size2](int state1, int state2) {
         return size2 * state1 + state2;
     };
 
-    std::unordered_map<int, int> state_map;
-    std::vector<int> unexplored;
+    auto setOFAState=[&](int state1, int state2, int ofa_state){
+        state_map[ID(state1,state2)]=ofa_state;
+        visited_pairs[ID(state1,state2)]=true;
+    };
+
+    auto getOFAState=[&](int state1, int state2){
+        return state_map[ID(state1,state2)];
+    };
+
+    auto isPairVisited=[&](int state1, int state2){
+        return visited_pairs[ID(state1,state2)];
+    };
+
+
+    std::vector<std::pair<int,int>> unexplored;
     unexplored.reserve(size1 * size2);
     int max_state = 0;
-    unexplored.push_back(0);
-    state_map[ID(0, 0)] = 0;
+    unexplored.emplace_back(0,0);
+    setOFAState(0, 0, 0);
     obs_fsm.addStates(1);
     while (!unexplored.empty()) {
-        int pair = unexplored.back();
+        auto [state1,state2] = unexplored.back();
         unexplored.pop_back();
-
-        int state12 = state_map[pair];
-
-        int state1 = pair / size2;
-        int state2 = pair % size2;
-
+        int state12 =getOFAState(state1,state2);
 
         for (int i = 0; i < inputs; ++i) {
             int o = driver.getOut(state1, i);
             int t = driven.getOut(state2, o);
             int next1 = driver.getSucc(state1, i);
             int next2 = driven.getSucc(state2, o);
-            int next12;
-            int next_pair = ID(next1, next2);
-
-            if (!state_map.count(next_pair)) {
+            int next12=0;
+            if (!isPairVisited(next1,next2)) {
                 obs_fsm.addStates();
-                state_map[next_pair] = ++max_state;
+                setOFAState(next1, next2, ++max_state);
                 next12 = max_state;
-                unexplored.push_back(next_pair);
-            } else next12 = state_map[next_pair];
+                unexplored.emplace_back(next1, next2);
+            } else next12 = getOFAState(next1,next2);
 
 
-            if (!obs_fsm.hasTransition(state_map[pair], o)) {
+            if (!obs_fsm.hasTransition(state12, o)) {
                 obs_fsm.setTransition(state12, o, t);
             }
             if (!obs_fsm.hasSources(next12, o, t) ||
@@ -72,13 +82,13 @@ OFA SBCMin::buildOFA(const DFSM &driver, const DFSM &driven) {
 
 DFSM SBCMin::buildCascadeDFSM(const DFSM &driver, const DFSM &driven) {
     DFSM result(driver.numberOfInputs(), driven.numberOfOutputs());
-    if (driver.getSize() == 0 || driven.getSize() == 0) {
+    if (driver.size() == 0 || driven.size() == 0) {
         return result;
     }
 
     int inputs = driver.numberOfInputs();
-    int size1 = driver.getSize();
-    int size2 = driven.getSize();
+    int size1 = driver.size();
+    int size2 = driven.size();
     auto ID = [size2](int state1, int state2) {
         return size2 * state1 + state2;
     };
@@ -125,14 +135,14 @@ DFSM SBCMin::buildCascadeDFSM(const DFSM &driver, const DFSM &driven) {
 }
 
 int SBCMin::getStateCoverage(const DFSM &driver, const DFSM &driven) {
-    if (driver.getSize() == 0 || driven.getSize() == 0) {
+    if (driver.size() == 0 || driven.size() == 0) {
         return 0;
     }
-    std::vector<bool> covered(driven.getSize(), false);
+    std::vector<bool> covered(driven.size(), false);
     int coverage = 0;
     int inputs = driver.numberOfInputs();
-    int size1 = driver.getSize();
-    int size2 = driven.getSize();
+    int size1 = driver.size();
+    int size2 = driven.size();
     auto ID = [size2](int state1, int state2) {
         return size2 * state1 + state2;
     };
@@ -177,14 +187,14 @@ int SBCMin::getStateCoverage(const DFSM &driver, const DFSM &driven) {
 
 OFA SBCMin::buildHeuristicOFA(const DFSM &driver, const DFSM &driven) {
     OFA result(driven.numberOfInputs(), driven.numberOfOutputs());
-    if (driver.getSize() == 0 || driver.getSize() == 0) {
+    if (driver.size() == 0 || driver.size() == 0) {
         return result;
     }
 
     int inputs1 = driver.numberOfInputs();
     int inputs2 = driven.numberOfInputs();
-    int size1 = driver.getSize();
-    int size2 = driven.getSize();
+    int size1 = driver.size();
+    int size2 = driven.size();
     auto productID = [size2](int state1, int state2) {
         return size2 * state1 + state2;
     };

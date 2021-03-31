@@ -91,6 +91,35 @@ namespace SBCMin {
     };
 
 
+    class LazyBinaryMRS : public MRS {
+    public:
+        virtual std::optional<int> operator()(int lower, int upper, std::function<bool(int)> query) {
+            if (upper < lower) return std::nullopt;
+
+            std::optional<int> result = std::nullopt;
+            bool upper_confirmed=false;
+
+            int current_lower=lower;
+            int current_upper=upper;
+
+
+
+            while (current_lower!=current_upper){
+                int current=(current_upper+current_lower)/2;
+                if(query(current)){
+                    current_upper=current;
+                    upper_confirmed=true;
+                } else{
+                    current_lower=current+1;
+                }
+            }
+            if(!upper_confirmed){
+                if(!query(current_upper)) return std::nullopt;
+            }
+            return current_upper;
+        }
+
+    };
 
 }
 #endif //PMIN_MONOTONE_RANGE_SEARCHERS_H

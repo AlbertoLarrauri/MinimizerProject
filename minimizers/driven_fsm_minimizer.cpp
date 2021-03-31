@@ -20,6 +20,6 @@ void DrivenFSMMinimizer::minimize(const DFSM &_driven, const DFSM &_driver) {
 
 void DrivenFSMMinimizer::minimizeImpl() {
     ofa_ptr=std::make_unique<OFA>(buildOFA(driver(),driven()));
-    ofaMinimizer().run(ofa(),driven().getSize());
+    ofaMinimizer().run(ofa(), driven().size());
     result_ptr=&ofaMinimizer().getResult();
 }

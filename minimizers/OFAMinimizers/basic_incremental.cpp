@@ -15,7 +15,7 @@ void BasicIncremental::init() {
     solver = std::make_unique<CMSat::SATSolver>();
     partial_solution = compat_matrix().getClique();
     current_size = partial_solution.size();
-    const int &size = ofa().getSize();
+    const int &size = ofa().size();
     resize(current_size);
 
 
@@ -148,7 +148,7 @@ void BasicIncremental::buildCoverClauses() {
 
 void BasicIncremental::generateIncrementalVars() {
     size_t initial_vars = max_var;
-    const int &size = ofa().getSize();
+    const int &size = ofa().size();
     resize(current_size);
 //@ Creating state-class variables
 
@@ -175,7 +175,7 @@ void BasicIncremental::generateIncrementalVars() {
 }
 
 void BasicIncremental::buildIncrementalClauses() {
-    const int &size = ofa().getSize();
+    const int &size = ofa().size();
 //       std::cout<<"Incompatibility clauses: \n";
     for (auto pair:compat_matrix().
             getPairs()) {
@@ -231,7 +231,7 @@ bool BasicIncremental::step() {
 bool BasicIncremental::runImpl() {
     init();
     while (true) {
-        std::cout << "Trying to minimize with size: " << current_size << "\n";
+        std::cout << "Trying to minimize with size_impl: " << current_size << "\n";
         if (trySolve({CMSat::Lit(size_vars.back(), false)})) {
             std::cout << "Succeeded\n";
             computeSolution();

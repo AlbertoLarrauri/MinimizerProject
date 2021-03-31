@@ -32,8 +32,9 @@ namespace SBCMin {
         const OFA *ofa_ptr;
         std::unique_ptr<const CompatMatrix> compat_matrix_ptr;
 
+
         inline virtual void buildMatrix() {
-            compat_matrix_ptr = std::make_unique<CompatMatrix>(ofa());
+            compat_matrix_ptr = std::make_unique<CompatMatrix>(CompatMatrix::generateCompatMatrix(ofa()));
 
         }
 
@@ -52,6 +53,9 @@ namespace SBCMin {
     protected:
 
 
+
+
+
         std::unique_ptr<CMSat::SATSolver> solver;
 
         std::unique_ptr<DFSM> result_ptr;
@@ -66,7 +70,7 @@ namespace SBCMin {
 
 
         inline size_t stateSetToID(int state, int Class) {
-            return Class * ofa().getSize() + state;
+            return Class * ofa().size() + state;
         }
 
 
@@ -78,13 +82,13 @@ namespace SBCMin {
             return *ofa_ptr;
         }
 
-        inline const CompatMatrix &compat_matrix() {
+        virtual inline const CompatMatrix &compat_matrix() {
             return *compat_matrix_ptr;
         }
 
 
         virtual inline void resize(int number_of_sets) {
-            state_set_vars.resize(ofa().getSize() * number_of_sets);
+            state_set_vars.resize(ofa().size() * number_of_sets);
             set_set_vars.resize(number_of_sets * number_of_sets * ofa().numberOfInputs());
         }
 
@@ -135,12 +139,16 @@ namespace SBCMin {
 
     protected:
         virtual bool query(int size)=0;
-
+        double sat_time=0.0;
 
     public:
 
         virtual void setStrategy(Strategy _strat) final {
             strat=std::move(_strat);
+        }
+
+        virtual double SATTime() final{
+            return sat_time;
         }
 
 

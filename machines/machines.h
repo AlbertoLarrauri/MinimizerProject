@@ -26,23 +26,23 @@ namespace SBCMin
 
     class FSM{
     protected:
-        int size=0;
+        int size_impl=0;
         int in_alphabet_size;
         int out_alphabet_size;
 
         //CONSTRUCTORS
 
-        FSM(int in_size, int out_size):in_alphabet_size(in_size), out_alphabet_size(out_size),size(0){};
+        FSM(int in_size, int out_size): in_alphabet_size(in_size), out_alphabet_size(out_size), size_impl(0){};
 
 
         virtual void reset(int in_size=0, int out_size=0){
             in_alphabet_size=in_size;
             out_alphabet_size=out_size;
-            size=0;
+            size_impl=0;
         }
 
     public:
-        inline int getSize() const{return size;}
+        inline int size() const{return size_impl;}
         inline int numberOfInputs() const{return in_alphabet_size;}
         inline int numberOfOutputs() const{return out_alphabet_size;}
 
@@ -114,8 +114,8 @@ namespace SBCMin
 
 
         inline void addStates(int amount=1){
-            size+=amount;
-            impl.resize(size*in_alphabet_size);
+            size_impl+=amount;
+            impl.resize(size_impl * in_alphabet_size);
         }
 
 
@@ -182,6 +182,8 @@ namespace SBCMin
         inline OFA(int in_size, int out_size): FSM(in_size, out_size){
         }
 
+        size_t numberOfTransitions();
+
         OFA(const OFA& other)=default;
 
         OFA& operator=(const OFA& other)=default;
@@ -242,16 +244,14 @@ namespace SBCMin
         }
 
         inline void addStates(int amount=1){
-            size+=amount;
-            impl.resize(size*in_alphabet_size);
-            source_data.resize(size*in_alphabet_size*out_alphabet_size);
+            size_impl+=amount;
+            impl.resize(size_impl * in_alphabet_size);
+            source_data.resize(size_impl * in_alphabet_size * out_alphabet_size);
         }
 
         inline bool hasSources(int state, int in, int out){
             return source_data[state].count(IOtoID(in, out));
         }
-
-
 
 
         inline const std::vector<int>& getSources(int state, int in, int out){
@@ -262,6 +262,11 @@ namespace SBCMin
         inline const std::unordered_map<size_t, std::vector<int>> & sourceData(int state) const {
             return source_data[state];
         }
+
+        inline const auto& getSourceData(int state){
+            return source_data[state];
+        }
+
 
 
         void print();

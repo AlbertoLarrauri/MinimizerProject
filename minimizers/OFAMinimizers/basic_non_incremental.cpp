@@ -12,7 +12,7 @@ void BasicNonIncremental::init() {
     solver=std::make_unique<CMSat::SATSolver>();
     partial_solution=compat_matrix().getClique();
     current_size = partial_solution.size();
-    const int &size = ofa().getSize();
+    const int &size = ofa().size();
     resize(current_size);
 
 
@@ -132,7 +132,7 @@ bool BasicNonIncremental::step() {
 
 
 void BasicNonIncremental::generateIncrementalVars() {
-    const int &size = ofa().getSize();
+    const int &size = ofa().size();
     resize(current_size);
 
     for (int state = 0; state < size; ++state) {
@@ -174,7 +174,7 @@ void BasicNonIncremental::buildSuccessorClauses() {
     for (int Class1 = 0; Class1 < current_size; ++Class1) {
         for (int i = 0; i < ofa().numberOfInputs(); ++i) {
             for (int Class2 = 0; Class2 < current_size; ++Class2) {
-                for (int state1 = 0; state1 < ofa().getSize(); ++state1) {
+                for (int state1 = 0; state1 < ofa().size(); ++state1) {
                     if (!ofa().hasTransition(state1, i)) continue;
                     auto succs = ofa().getSuccs(state1, i);
 
@@ -198,7 +198,7 @@ void BasicNonIncremental::buildSuccessorClauses() {
 bool BasicNonIncremental::runImpl() {
     init();
     while (true) {
-        std::cout << "Trying to minimize with size: " << current_size << "\n";
+        std::cout << "Trying to minimize with size_impl: " << current_size << "\n";
         if (trySolve()) {
             std::cout << "Succeeded\n";
             computeSolution();

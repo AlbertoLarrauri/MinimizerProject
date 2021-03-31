@@ -12,7 +12,7 @@ void AssumptionBased::generateVars() {
     resize(upper_bound);
 
     for (int set = 0; set < upper_bound; ++set) {
-        for (int state = 0; state < ofa().getSize(); ++state) {
+        for (int state = 0; state < ofa().size(); ++state) {
             stateSetVar(state, set) = number_of_vars++;
         }
 
@@ -104,7 +104,7 @@ void AssumptionBased::buildIncompatibilityClauses() {
 }
 
 void AssumptionBased::buildSuccessorClauses() {
-    for (int state = 0; state < ofa().getSize(); ++state) {
+    for (int state = 0; state < ofa().size(); ++state) {
         for (int in = 0; in < ofa().numberOfInputs(); ++in) {
             if (!ofa().hasTransition(state, in)) continue;
             for (int succ:ofa().getSuccs(state, in)) {
@@ -136,7 +136,7 @@ void AssumptionBased::buildSizeClauses() {
     }
 
     for (int size = lower_bound; size <= upper_bound; ++size) {
-        for (int state = 0; state < ofa().getSize(); ++state) {
+        for (int state = 0; state < ofa().size(); ++state) {
             std::vector<CMSat::Lit> clause;
             clause.reserve(2);
             clause.emplace_back(stateSetVar(state, size - 1), true);

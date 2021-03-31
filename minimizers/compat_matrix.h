@@ -19,17 +19,22 @@ namespace SBCMin {
         std::vector<bool> impl;
         std::vector<std::pair<int, int>> pairs;
 
-        bool is_clique_needed;
         std::vector<int> incompat_scores;
         std::vector<int> big_clique;
+        std::vector<int> ordering;
 
         size_t toID(int state1, int state2) const;
 
-        void computeLargeClique();
+        void computeLargeClique(bool ordering_req);
+
+
+        CompatMatrix()=default;
+
 
     public:
 
-        CompatMatrix(const OFA &ofa, bool _is_clique_needed = true);
+
+
 
         bool inline areIncompatible(int state1, int state2) const {
             return impl[toID(state1, state2)];
@@ -50,7 +55,17 @@ namespace SBCMin {
         }
 
 
+
+        inline const std::vector<int> & getOrdering() const {
+            return ordering;
+        }
+
+
+        static CompatMatrix generateCompatMatrix(const OFA& ofa, bool clique_req=true, bool ordering_req=true);
+
     };
+
+
 }
 
 #endif //PMIN_COMPAT_MATRIX_H

@@ -14,7 +14,7 @@ using namespace SBCMin;
 void DFSM::print() {
     std::cout << "State / Input --> Output / State \n";
     std::cout << "---------------------------------\n";
-    for (int state = 0; state < size; ++state) {
+    for (int state = 0; state < size_impl; ++state) {
         for (int i = 0; i < in_alphabet_size; ++i) {
             std::cout << state << " / " << i << " --> " << getOut(state, i) << " / " << getSucc(state, i) << "\n";
         }
@@ -24,7 +24,7 @@ void DFSM::print() {
 void OFA::print() {
     std::cout << "State / Input --> Output / States \n";
     std::cout << "---------------------------------\n";
-    for (int state = 0; state < size; ++state) {
+    for (int state = 0; state < size_impl; ++state) {
         for (int i = 0; i < in_alphabet_size; ++i) {
             std::cout << state << " / " << i << " --> ";
             if (!hasTransition(state, i)) {
@@ -42,16 +42,28 @@ void OFA::print() {
     }
 }
 
+size_t OFA::numberOfTransitions() {
+    size_t size=0;
+    for(auto v:impl){
+        if(!v.has_value()){
+//            ++size;
+        }else{
+            size+=(*v).successors.size();
+        }
+    }
+    return size;
+}
+
 
 bool SBCMin::areEquivalent(const DFSM &A, const DFSM &B) {
     if (&A == &B) return true;
     if (A.numberOfInputs() != B.numberOfInputs()) return false;
-    if (A.getSize() == 0 && B.getSize() == 0) return true;
-    if (A.getSize() == 0 || B.getSize() == 0) return false;
+    if (A.size() == 0 && B.size() == 0) return true;
+    if (A.size() == 0 || B.size() == 0) return false;
 
     int inputs = A.numberOfInputs();
-    int size1 = A.getSize();
-    int size2 = B.getSize();
+    int size1 = A.size();
+    int size2 = B.size();
     auto ID = [size2](int state1, int state2) {
         return size2 * state1 + state2;
     };

@@ -14,4 +14,3 @@ make
 
 
 
-*(Probably the project could be made portable in a much better way)*

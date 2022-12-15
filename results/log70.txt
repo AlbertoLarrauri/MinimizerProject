@@ -1,0 +1,3 @@
+"method_name":"proposed",
+"result_size":30, 
+"execution_time":341.924,

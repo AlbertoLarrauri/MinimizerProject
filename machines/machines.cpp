@@ -102,3 +102,26 @@ bool SBCMin::areEquivalent(const DFSM &A, const DFSM &B) {
 }
 
 
+void NFA::print() const {
+    for(uint32_t s=0; s<size(); ++s){
+        for(uint32_t in=0; in<numberOfInputs(); ++in){
+
+            std::cout<<s<<" - "<<in<<" -> [ ";
+
+            for(auto t:getSuccs(s,in)){
+                std::cout<<t<<", ";
+            }
+            std::cout<<"]\n";
+        }
+    }
+
+}
+
+bool NFA::isDeterministic() const {
+    for(uint32_t s=0; s<size();++s){
+        for(uint32_t in=0; in<numberOfInputs(); ++in){
+            if(getSuccs(s,in).size()>1) return false;
+        }
+    }
+    return true;
+}

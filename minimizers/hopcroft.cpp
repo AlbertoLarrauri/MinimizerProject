@@ -30,7 +30,7 @@ DFSMHopcroft::DFSMHopcroft(DFSM &_dfsm) :
         for (int in = 0; in < inputs; ++in) {
             const int out = dfsm.getOut(state, in);
             int write_head = 0;
-            for (int setID:matching_sets) {
+            for (int setID: matching_sets) {
                 int matching_state = initial_partition[setID].front();
                 if (dfsm.getOut(matching_state, in) == out) {
                     matching_sets[write_head] = setID;
@@ -46,7 +46,7 @@ DFSMHopcroft::DFSMHopcroft(DFSM &_dfsm) :
             initial_partition[set].push_back(state);
         }
     }
-    for (std::vector<int> set:initial_partition) {
+    for (std::vector<int> set: initial_partition) {
         addSet(set, true);
     }
 }
@@ -58,11 +58,11 @@ void DFSMHopcroft::refine(int target) {
     int inputs = dfsm.numberOfInputs();
     for (int in = 0; in < inputs; ++in) {
         Partition refinement(2 * number_of_sets);
-        for (int state:active_states) {
+        for (int state: active_states) {
             const int succ = dfsm.getSucc(state, in);
             const int set = toSetOrSingleton(state);
-            assert(set>=0);
-            assert(set<number_of_sets);
+            assert(set >= 0);
+            assert(set < number_of_sets);
             if (old_partition_dict[succ] == target) {
                 refinement[2 * set + 1].push_back(state);
             } else {
@@ -88,7 +88,7 @@ void DFSMHopcroft::refine(int target) {
         clear();
 
         for (int setID = 0; setID < 2 * old_number_of_sets; ++setID) {
-            if(!refinement[setID].empty()) addSet(refinement[setID], to_track[setID]);
+            if (!refinement[setID].empty()) addSet(refinement[setID], to_track[setID]);
         }
     }
 }
@@ -109,7 +109,7 @@ int DFSMHopcroft::popTarget() {
     } else {
         int target = tracked_sets.back();
         tracked_sets.pop_back();
-        assert(is_set_tracked.size()>target);
+        assert(is_set_tracked.size() > target);
         is_set_tracked[target] = false;
         return target;
     }
@@ -120,11 +120,11 @@ void DFSMHopcroft::addSet(std::vector<int> set, bool tracking) {
     assert(!set.empty());
     if (set.size() == 1) {
         int state = set.front();
-        toSetOrSingleton(state) = -state-1;
-        if (tracking) tracked_singletons.push_back(-state-1);
+        toSetOrSingleton(state) = -state - 1;
+        if (tracking) tracked_singletons.push_back(-state - 1);
     } else {
-        assert(is_set_tracked.size()==number_of_sets);
-        for (int state:set) {
+        assert(is_set_tracked.size() == number_of_sets);
+        for (int state: set) {
             toSetOrSingleton(state) = number_of_sets;
             active_states.push_back(state);
         }
@@ -137,9 +137,8 @@ void DFSMHopcroft::addSet(std::vector<int> set, bool tracking) {
 }
 
 
-
 DFSM DFSMHopcroft::extractDFSM(DFSMHopcroft &algorithm) {
-    DFSM& dfsm=algorithm.dfsm;
+    DFSM &dfsm = algorithm.dfsm;
     DFSM result(dfsm.numberOfInputs(), dfsm.numberOfOutputs());
 
     std::vector<int> state_to_old_state;
@@ -214,12 +213,12 @@ OFAHopcroft::OFAHopcroft(OFA &_ofa) :
         std::iota(matching_sets.begin(), matching_sets.end(), 0);
         for (int in = 0; in < inputs; ++in) {
             std::optional<int> out;
-            ofa.hasTransition(state, in)? out=ofa.getOut(state, in): out=std::nullopt;
+            ofa.hasTransition(state, in) ? out = ofa.getOut(state, in) : out = std::nullopt;
             int write_head = 0;
-            for (int setID:matching_sets) {
+            for (int setID: matching_sets) {
                 int matching_state = initial_partition[setID].front();
-                if(!ofa.hasTransition(matching_state,in) && out) continue;
-                if (!ofa.hasTransition(matching_state,in) || ofa.getOut(matching_state, in) == out) {
+                if (!ofa.hasTransition(matching_state, in) && out) continue;
+                if (!ofa.hasTransition(matching_state, in) || ofa.getOut(matching_state, in) == out) {
                     matching_sets[write_head] = setID;
                     write_head++;
                 }
@@ -233,7 +232,7 @@ OFAHopcroft::OFAHopcroft(OFA &_ofa) :
             initial_partition[set].push_back(state);
         }
     }
-    for (std::vector<int> set:initial_partition) {
+    for (std::vector<int> set: initial_partition) {
         addSet(set, true);
     }
 }
@@ -245,16 +244,16 @@ void OFAHopcroft::refine(int target) {
     int inputs = ofa.numberOfInputs();
     for (int in = 0; in < inputs; ++in) {
         Partition refinement(2 * number_of_sets);
-        for (int state:active_states) {
-            bool intersects=false;
-            if(ofa.hasTransition(state,in)){
-                for(int succ:ofa.getSuccs(state,in)){
-                    if (old_partition_dict[succ] == target) intersects= true;
+        for (int state: active_states) {
+            bool intersects = false;
+            if (ofa.hasTransition(state, in)) {
+                for (int succ: ofa.getSuccs(state, in)) {
+                    if (old_partition_dict[succ] == target) intersects = true;
                 }
             }
             const int set = toSetOrSingleton(state);
-            assert(set>=0);
-            assert(set<number_of_sets);
+            assert(set >= 0);
+            assert(set < number_of_sets);
             if (intersects) {
                 refinement[2 * set + 1].push_back(state);
             } else {
@@ -280,7 +279,7 @@ void OFAHopcroft::refine(int target) {
         clear();
 
         for (int setID = 0; setID < 2 * old_number_of_sets; ++setID) {
-            if(!refinement[setID].empty()) addSet(refinement[setID], to_track[setID]);
+            if (!refinement[setID].empty()) addSet(refinement[setID], to_track[setID]);
         }
     }
 }
@@ -301,7 +300,7 @@ int OFAHopcroft::popTarget() {
     } else {
         int target = tracked_sets.back();
         tracked_sets.pop_back();
-        assert(is_set_tracked.size()>target);
+        assert(is_set_tracked.size() > target);
         is_set_tracked[target] = false;
         return target;
     }
@@ -312,11 +311,11 @@ void OFAHopcroft::addSet(std::vector<int> set, bool tracking) {
     assert(!set.empty());
     if (set.size() == 1) {
         int state = set.front();
-        toSetOrSingleton(state) = -state-1;
-        if (tracking) tracked_singletons.push_back(-state-1);
+        toSetOrSingleton(state) = -state - 1;
+        if (tracking) tracked_singletons.push_back(-state - 1);
     } else {
-        assert(is_set_tracked.size()==number_of_sets);
-        for (int state:set) {
+        assert(is_set_tracked.size() == number_of_sets);
+        for (int state: set) {
             toSetOrSingleton(state) = number_of_sets;
             active_states.push_back(state);
         }
@@ -329,9 +328,8 @@ void OFAHopcroft::addSet(std::vector<int> set, bool tracking) {
 }
 
 
-
 OFA OFAHopcroft::extractOFA(OFAHopcroft &algorithm) {
-    OFA& ofa=algorithm.ofa;
+    OFA &ofa = algorithm.ofa;
     OFA result(ofa.numberOfInputs(), ofa.numberOfOutputs());
 
     std::vector<int> state_to_old_state;
@@ -357,8 +355,8 @@ OFA OFAHopcroft::extractOFA(OFAHopcroft &algorithm) {
         for (int in = 0; in < inputs; ++in) {
             if (!ofa.hasTransition(old_state, in)) continue;
             int out = ofa.getOut(old_state, in);
-            result.setTransition(state, in, out);
-            for (int old_succ:ofa.getSuccs(old_state, in)) {
+            result.setOut(state, in, out);
+            for (int old_succ: ofa.getSuccs(old_state, in)) {
 
                 int succ_set = algorithm.toSetOrSingleton(old_succ);
                 int succ;
@@ -371,7 +369,7 @@ OFA OFAHopcroft::extractOFA(OFAHopcroft &algorithm) {
                     unexplored_old.push_back(old_succ);
                 }
 
-                if (!result.hasSources(succ,in,out) || !(result.getSources(succ, in, out).back() == state)) {
+                if (!result.hasSources(succ, in, out) || !(result.getSources(succ, in, out).back() == state)) {
                     result.addSucc(state, in, succ);
 
                 }
@@ -392,3 +390,83 @@ OFA OFAHopcroft::minimize(OFA &ofa) {
     return extractOFA(algorithm);
 }
 
+NFA SBCMin::minimizeDFA(const NFA &A) {
+    NFA Result(A.numberOfInputs());
+    std::vector<uint32_t> states_to_partitions(A.size());
+    std::vector<uint32_t> partitions_to_states = {0};
+
+    bool change;
+
+    do {
+
+        change=false;
+
+        for (uint32_t in = 0; in < A.numberOfInputs(); ++in) {
+
+            auto states_to_partitions_old = states_to_partitions;
+            std::vector<std::vector<uint32_t>> old_partitions(partitions_to_states.size());
+
+            for (uint32_t s = 0; s < A.size(); ++s) {
+                auto part = states_to_partitions[s];
+                old_partitions[part].push_back(s);
+            }
+
+
+            for (uint32_t p_idx = 0; p_idx < old_partitions.size(); ++p_idx) {
+                std::vector<uint32_t> reps = {partitions_to_states[p_idx]};
+                auto &partition = old_partitions[p_idx];
+                for (auto s: partition) {
+                    bool new_part = true;
+                    for (auto t: reps) {
+                        if (A.hasSymbol(s, in) != A.hasSymbol(t, in)) continue;
+                        if(!A.hasSymbol(s,in)){
+                            new_part = false;
+                            states_to_partitions[s] = states_to_partitions[t];
+                            break;
+                        }
+
+                        auto succ1 = *A.getSuccs(s, in).begin();
+                        auto succ2 = *A.getSuccs(t, in).begin();
+
+                        auto part1 = states_to_partitions_old[succ1];
+                        auto part2 = states_to_partitions_old[succ2];
+
+                        if (part1 == part2) {
+                            new_part = false;
+                            states_to_partitions[s] = states_to_partitions[t];
+                            break;
+                        }
+                    }
+
+                    if (!new_part) continue;
+
+                    change=true;
+                    reps.push_back(s);
+                    states_to_partitions[s] = partitions_to_states.size();
+                    partitions_to_states.push_back(s);
+
+                }
+            }
+        }
+
+
+    } while (change);
+
+
+    Result.addStates(partitions_to_states.size());
+
+    for(uint32_t s_Result=0; s_Result < Result.size(); ++s_Result){
+        for(uint32_t in=0; in<Result.numberOfInputs(); ++in){
+            auto s_A=partitions_to_states[s_Result];
+            if(!A.hasSymbol(s_A,in)) continue;
+            auto succ_A=*A.getSuccs(s_A,in).begin();
+            auto succ_Result= states_to_partitions[succ_A];
+            Result.addSucc(s_Result,in,succ_Result);
+        }
+    }
+
+
+
+
+    return Result;
+}

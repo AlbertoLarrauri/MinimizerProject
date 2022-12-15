@@ -13,7 +13,19 @@
 
 namespace SBCMin {
 
+    NFA makeDeterministic(const NFA& A);
+
+    NFA getOutputNFA(const DFSM& H, std::optional<uint32_t> alphabet_size=std::nullopt);
+
+    OFA buildOFA(const NFA& A, const DFSM& T);
+
     OFA buildOFA(const DFSM &driver, const DFSM &driven);
+
+    OFA buildOFAV2(const DFSM &driver, const DFSM &driven);
+
+    OFA buildOFAKimNewborn(const DFSM &driver, const DFSM &driven);
+
+    OFA buildOFA(const DFSM &driver, const DFSM &driven, std::vector<int>& state_map );
 
     OFA buildHeuristicOFA(const DFSM &driver, const DFSM &driven);
 
@@ -22,6 +34,8 @@ namespace SBCMin {
     int getStateCoverage(const DFSM &driver, const DFSM &driven);
 
     DFSM makeRandomDFSM(int in_size, int out_size, int size, int padding=0);
+    DFSM makeRandomDFSM(int in_size, int out_size, int size, std::minstd_rand0& generator);
+
 
     class ModularDFSMBuilder{
     private:

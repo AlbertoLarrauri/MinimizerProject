@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <cassert>
 #include <memory>
+#include <boost/container/flat_set.hpp>
 
 
 namespace SBCMin
@@ -226,7 +227,7 @@ namespace SBCMin
 
         }
 
-        inline void setTransition(int state, int in, int out){
+        inline void setOut(int state, int in, int out){
             impl[SItoID(state, in)].emplace();
             impl[SItoID(state, in)]->out=out;
         }
@@ -275,6 +276,119 @@ namespace SBCMin
 
 
     bool areEquivalent(const DFSM& A, const DFSM& B);
+
+
+
+    class NFA {
+    private:
+        typedef boost::container::flat_set<uint32_t> flat_set;
+//        typedef std::NumVec<std::optional<NumVec>> T_IMPL;
+        typedef std::vector<flat_set> T_IMPL;
+        T_IMPL impl;
+        T_IMPL info_impl;
+        T_IMPL r_impl;
+        T_IMPL r_info_impl;
+
+        inline size_t SIToID(const uint32_t state, const uint32_t in) const {
+            return size_t(in_alphabet_size) * size_t(state) + size_t(in);
+        }
+
+    protected:
+        uint32_t size_impl = 0;
+        uint32_t in_alphabet_size;
+
+    public:
+
+        inline NFA(uint32_t in_size) : in_alphabet_size(in_size) {};
+
+        inline uint32_t size() const {
+            return size_impl;
+        }
+
+        inline uint32_t numberOfInputs() const {
+            return in_alphabet_size;
+        }
+
+        inline void addStates(uint32_t amount = 1) {
+            size_impl += amount;
+
+            impl.resize(size_impl * in_alphabet_size);
+            r_impl.resize(size_impl * in_alphabet_size);
+
+            info_impl.resize(size_impl);
+            r_info_impl.resize(size_impl);
+        }
+
+
+        inline void addSucc(uint32_t state, uint32_t in, uint32_t next) {
+            auto &symbols = info_impl.at(state);
+            auto &succs = impl.at(SIToID(state, in));
+            auto &r_symbols = r_info_impl.at(next);
+            auto &r_succs = r_impl.at(SIToID(next, in));
+
+            if(!r_succs.empty() && *r_succs.rbegin()==state) return;
+
+            if (succs.empty()) {
+                symbols.insert(in);
+            }
+            if (r_succs.empty()) {
+                r_symbols.insert(in);
+            }
+            succs.insert(next);
+            r_succs.insert(state);
+            return;
+        }
+
+
+        inline const flat_set &getSuccs(uint32_t state, uint32_t in) const {
+//            assert(!(impl.at(SIToID(state, in)).empty()));
+            return impl.at(SIToID(state, in));
+        }
+
+        inline const flat_set &getSymbols(uint32_t state) const {
+            return info_impl.at(state);
+        }
+
+
+        inline bool hasSymbol(uint32_t state, uint32_t in) const {
+            auto &succs = impl.at(SIToID(state, in));
+            return !succs.empty();
+        }
+
+        inline const flat_set &getRSuccs(uint32_t state, uint32_t in) const {
+//            assert(!(r_impl.at(SIToID(state, in)).empty()));
+            return r_impl.at(SIToID(state, in));
+        }
+
+        inline const flat_set &getRSymbols(uint32_t state) const {
+            return r_info_impl.at(state);
+        }
+
+        inline bool hasRSymbol(uint32_t state, uint32_t in) const {
+            auto &succs = r_impl.at(SIToID(state, in));
+            return !succs.empty();
+        }
+
+        bool isDeterministic() const;
+
+        void print() const;
+
+
+//        std::unordered_set<uint32_t> propagate(const std::unordered_set<uint32_t> &state_set, uint32_t in) const;
+
+//        std::unordered_set<uint32_t> back_propagate(const std::unordered_set<uint32_t>& target,
+//                                                    const std::unordered_set<uint32_t>& source,
+//                                                    uint32_t in) const;
+
+
+
+
+    };
+
+
+
+
+
 }
 
 

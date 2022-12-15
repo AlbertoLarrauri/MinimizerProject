@@ -36,8 +36,9 @@ CompatMatrix CompatMatrix::generateCompatMatrix(const OFA &ofa, bool clique_req,
     std::vector<bool> &impl = matrix.impl;
     std::vector<int> &big_clique = matrix.big_clique;
     std::vector<int> &ordering = matrix.ordering;
-
     size = ofa.size();
+//    std::vector<std::vector<int>> dist_seqs((size * (size + 1)) / 2);
+
     impl.resize((size * (size + 1)) / 2);
     matrix.incompat_scores.resize(size);
 
@@ -48,12 +49,19 @@ CompatMatrix CompatMatrix::generateCompatMatrix(const OFA &ofa, bool clique_req,
     for (int state1 = 1; state1 < size; ++state1) {
         for (int state2 = 0; state2 < state1; ++state2) {
             if (matrix.areIncompatible(state1, state2)) continue;
+//            if(state1==9 && state2==0){
+//                std::cout<<"Hey";
+//            }
 
             for (int i = 0; i < inputs; ++i) {
                 if (ofa.hasTransition(state1, i) &&
                     ofa.hasTransition(state2, i) &&
                     (ofa.getOut(state1, i) != ofa.getOut(state2, i))) {
+//                    if(state1==9 && state2==0){
+//                        std::cout<<"Hey \n";
+//                    }
                     matrix.setIncompatible(state1, state2);
+//                    dist_seqs[matrix.toID(state1,state2)].push_back(i);
                     modified.emplace_back(state1, state2);
 
                     while (!modified.empty()) {
@@ -64,12 +72,20 @@ CompatMatrix CompatMatrix::generateCompatMatrix(const OFA &ofa, bool clique_req,
                         auto &sources2 = ofa.sourceData(mstate2);
                         for (auto pair:sources1) {
                             if (sources2.count(pair.first)) {
+                                auto new_in = pair.first%ofa.numberOfInputs();
                                 auto parents1 = pair.second;
                                 auto parents2 = sources2.at(pair.first);
                                 for (auto parent1:parents1) {
                                     for (auto parent2:parents2) {
+//                                        if((parent1==0 && parent2 ==9) || (parent1==9 && parent2==0)){
+//                                            std::cout<<"Hi \n";
+//                                        }
                                         if (matrix.areIncompatible(parent1, parent2)) continue;
                                         matrix.setIncompatible(parent1, parent2);
+//                                        auto & seq_parent = dist_seqs[matrix.toID(parent1,parent2)];
+//                                        seq_parent.push_back(new_in);
+//                                        auto & seq_children = dist_seqs[matrix.toID(mstate1, mstate2)];
+//                                        seq_parent.insert(seq_parent.end(), seq_children.begin(), seq_children.end());
                                         modified.emplace_back(parent1, parent2);
                                     }
                                 }
@@ -80,6 +96,14 @@ CompatMatrix CompatMatrix::generateCompatMatrix(const OFA &ofa, bool clique_req,
             }
         }
     }
+
+//    std::cout<<"Incompat sequence of 2 and 9 at 0 \n";
+//    auto seq= dist_seqs[matrix.toID(51,87)];
+//
+//    for(auto it= seq.begin(); it!=seq.end(); ++it){
+//        std::cout<<*it<<" - ";
+//    }
+//    std::cout<<"\n";
 
     if (!clique_req) {
         big_clique.push_back(0);

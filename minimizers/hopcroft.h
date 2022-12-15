@@ -131,6 +131,10 @@ namespace SBCMin {
 
 
 
+    NFA minimizeDFA(const NFA& A);
+
+
+
 
 }
 

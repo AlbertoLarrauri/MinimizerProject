@@ -18,7 +18,8 @@ add_library(SBCMin SHARED machines/machines.cpp machines/machines.h
         machines/serializer.cpp machines/serializer.h minimizers/monotone_range_searchers.h
         minimizers/OFAMinimizers/w_state_priority.cpp minimizers/OFAMinimizers/w_state_priority.h)
 
-add_executable(main main.cpp test/experiment.cpp test/experiment.h)
+add_executable(run_benchmark run_benchmark.cpp)
+add_executable(run_benchmark_KN run_benchmark_KN.cpp)
 
 target_include_directories(SBCMin PRIVATE ${CRYPTOMINISAT5_INCLUDE_DIRS})
 
@@ -28,5 +29,6 @@ add_executable(check check.cpp test/experiment.cpp test/experiment.h)
 
 target_link_libraries(check PUBLIC SBCMin)
 
-target_link_libraries(main PUBLIC SBCMin)
+target_link_libraries(run_benchmark PUBLIC SBCMin)
 
+target_link_libraries(run_benchmark_KN PUBLIC SBCMin)

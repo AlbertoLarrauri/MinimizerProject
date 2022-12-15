@@ -16,6 +16,7 @@ namespace SBCMin{
     DFSM deserializeDFSM(const std::string& str);
 
 
+
     void serializeCascade(const DFSM &driver, const DFSM& driven, std::string name= "cascade0", std::filesystem::path dir= "./benchmarks/");
 
     std::pair<DFSM,DFSM> deserializeCascade(const std::filesystem::path& file_dir);
